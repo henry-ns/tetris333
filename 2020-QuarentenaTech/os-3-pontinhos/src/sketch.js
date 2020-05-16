@@ -5,11 +5,15 @@ let moviments;
 function setup() {
   createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
 
+<<<<<<< HEAD
   piece = new Piece({
     initialShape: SHAPES[4],// random(SHAPES),
     x: width / 2 - BLOCK_SIZE,
     y: 0,
   });
+=======
+  piece = new Piece(random(MODELS));
+>>>>>>> 98c5595... refact: changing how to storage each piece data
 
   moviments = {
     'ArrowLeft': () => {
