@@ -16,16 +16,16 @@ function setup() {
 >>>>>>> 98c5595... refact: changing how to storage each piece data
 
   moviments = {
-    'ArrowLeft': () => {
-      piece.moveHorizontally(-1);
+    ArrowLeft: () => {
+      if (piece.checkSideEdges() != "l") piece.moveHorizontally(-1);
     },
-    'ArrowRight': () => {
-      piece.moveHorizontally();
+    ArrowRight: () => {
+      if (piece.checkSideEdges() != "r") piece.moveHorizontally();
     },
-    'a': () => {
+    a: () => {
       piece.rotate();
     },
-    's': () => {},
+    s: () => {},
   };
 
   setInterval(() => {
