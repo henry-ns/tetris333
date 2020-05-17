@@ -39,6 +39,7 @@ function draw() {
   translate(-BLOCK_SIZE, 0);
 
   piece.show();
+  //piece.checkBottomEdge();
 }
 
 function keyPressed() {
