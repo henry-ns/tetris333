@@ -4,9 +4,13 @@ class Piece {
     this.y = y;
 
     this.color = color || this._randomColor();
+<<<<<<< HEAD
     this.blocks = this._initBlocks(initialShape);
 
     this.size = 4;
+=======
+    this.blocks = this._initBlocks(shape);
+>>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
   }
 
   _randomColor() {
@@ -38,6 +42,7 @@ class Piece {
       blocks.push(blockLine);
     });
 
+    console.log(blocks);
     return blocks;
   }
 
@@ -54,11 +59,14 @@ class Piece {
 
     this._forBlock(({ block }) => {
       block.moveHorizontally(direction);
+<<<<<<< HEAD
       //block.show();
+=======
+>>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
     });
   }
 
-  rotate() {
+  rotateClockwise() {
     const { length } = this.blocks[0];
     const newMatrix = Array.from({ length }).map(() => []);
 
@@ -73,8 +81,17 @@ class Piece {
       block.x = this.x + index * BLOCK_SIZE;
       block.y = this.y + lineIndex * BLOCK_SIZE;
     });
+<<<<<<< HEAD
 
     this.checkPieceInBoard();
+=======
+  }
+
+  rotateAntiClockwise() {
+    for (let i = 0; i < 3; i++) {
+      this.rotateClockwise();
+    }
+>>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
   }
 
   show() {
@@ -83,7 +100,7 @@ class Piece {
 
   update() {
     this.y += BLOCK_SIZE;
-    this._forBlock(({ block }) => block.update());
+    this._forBlock(({ block }) => block.gravity());
   }
 
   checkSideEdges() {

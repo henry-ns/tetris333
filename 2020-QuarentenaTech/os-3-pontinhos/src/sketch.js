@@ -16,6 +16,7 @@ function setup() {
 >>>>>>> 98c5595... refact: changing how to storage each piece data
 
   moviments = {
+<<<<<<< HEAD
     ArrowLeft: () => {
       if (piece.checkSideEdges() != "l") piece.moveHorizontally(-1);
     },
@@ -26,6 +27,20 @@ function setup() {
       piece.rotate();
     },
     s: () => {},
+=======
+    ArrowLeft() {
+      piece.moveHorizontally(-1);
+    },
+    ArrowRight() {
+      piece.moveHorizontally();
+    },
+    a() {
+      piece.rotateClockwise();
+    },
+    s() {
+      piece.rotateAntiClockwise();
+    },
+>>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
   };
 
   setInterval(() => {

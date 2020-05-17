@@ -13,7 +13,9 @@ const SHAPES = [
     [1, 0, 0],
 =======
 const I_MODEL = {
-  shape: [[1, 1, 1, 1]],
+  shape: [
+    [1, 1, 1, 1],
+  ],
   color: "#FFFF",
 };
 
@@ -22,6 +24,7 @@ const J_MODEL = {
     [0, 0, 1],
 >>>>>>> 98c5595... refact: changing how to storage each piece data
     [1, 1, 1],
+    [0, 0, 0],
   ],
   color: "#FFFF",
 };
@@ -30,6 +33,7 @@ const L_MODEL = {
   shape: [
     [1, 0, 0],
     [1, 1, 1],
+    [0, 0, 0],
   ],
 <<<<<<< HEAD
   [
@@ -50,6 +54,7 @@ const S_MODEL = {
   shape: [
     [0, 1, 1],
     [1, 1, 0],
+    [0, 0, 0],
   ],
   color: "#FFFF",
 };
@@ -58,6 +63,7 @@ const Z_MODEL = {
   shape: [
     [1, 1, 0],
     [0, 1, 1],
+    [0, 0, 0],
   ],
   color: "#FFFF",
 };
@@ -66,6 +72,7 @@ const T_MODEL = {
   shape: [
     [1, 1, 1],
     [0, 1, 0],
+    [0, 0, 0],
   ],
   color: "#FFFF",
 };
