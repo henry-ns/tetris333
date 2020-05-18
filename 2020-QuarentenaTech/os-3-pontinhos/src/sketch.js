@@ -24,8 +24,12 @@ function setup() {
       if (piece.checkSideEdges() != "r") piece.moveHorizontally();
     },
     a: () => {
-      piece.rotate();
+      piece.rotateClockwise();
     },
+    s: () => {
+      piece.rotateAntiClockwise();
+    },
+<<<<<<< HEAD
     s: () => {},
 =======
     ArrowLeft() {
@@ -41,6 +45,8 @@ function setup() {
       piece.rotateAntiClockwise();
     },
 >>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
+=======
+>>>>>>> 6ac88e5... fix: fixing issue due the merge
   };
 
   setInterval(() => {
@@ -54,7 +60,7 @@ function draw() {
   translate(-BLOCK_SIZE, 0);
 
   piece.show();
-  //piece.checkBottomEdge();
+  piece.checkBottomEdge();
 }
 
 function keyPressed() {
