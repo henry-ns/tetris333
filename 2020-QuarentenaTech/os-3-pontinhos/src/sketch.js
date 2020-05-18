@@ -58,7 +58,9 @@ function draw() {
   drawBackground();
 
   piece.show();
-  piece.checkBottomEdge();
+  if (piece.checkBottomEdge()) {
+    noLoop();
+  }
 }
 
 function keyPressed() {
