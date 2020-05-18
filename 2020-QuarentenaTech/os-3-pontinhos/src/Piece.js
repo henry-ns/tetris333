@@ -1,7 +1,22 @@
 class Piece {
+<<<<<<< HEAD
   constructor({ x = width / 2, y = 0, initialShape, color } = {}) {
     this.x = x;
+=======
+  constructor({
+    x = width / 2,
+    y = 0,
+    shape,
+    color,
+    pieceWidth,
+    pieceHeight,
+  } = {}) {
+    this.x = x - BLOCK_SIZE;
+>>>>>>> 79767dd... refact: added the piece width and height to piece class
     this.y = y;
+
+    this.pieceWidth = pieceWidth;
+    this.pieceHeight = pieceHeight;
 
     this.color = color || this._randomColor();
 <<<<<<< HEAD
@@ -67,6 +82,11 @@ class Piece {
   }
 
   rotateClockwise() {
+    this.pieceHeight = [
+      this.pieceWidth,
+      (this.pieceWidth = this.pieceHeight),
+    ][0];
+
     const { length } = this.blocks[0];
     const newMatrix = Array.from({ length }).map(() => []);
 
@@ -82,6 +102,9 @@ class Piece {
       block.y = this.y + lineIndex * BLOCK_SIZE;
     });
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 79767dd... refact: added the piece width and height to piece class
 
     this.checkPieceInBoard();
 =======
@@ -104,24 +127,23 @@ class Piece {
   }
 
   checkSideEdges() {
-    const pieceWidth = this.blocks[0].length;
-
-    if (this.x == BLOCK_SIZE) {
+    if (this.x == 0) {
+      //console.log("LEFT EDGE", this.x);
       return "l";
     }
-    if (this.x + pieceWidth * BLOCK_SIZE - BLOCK_SIZE == width) {
+    if (this.x + this.pieceWidth * BLOCK_SIZE == width) {
+      //console.log("RIGHT EDGE", this.x);
       return "r";
     }
   }
 
   checkPieceInBoard() {
-    const pieceWidth = this.blocks[0].length;
-    console.log(this.x + pieceWidth * BLOCK_SIZE - BLOCK_SIZE);
-    if (this.x + pieceWidth * BLOCK_SIZE - BLOCK_SIZE > width) {
+    console.log(this.x + this.pieceWidth * BLOCK_SIZE);
+    if (this.x + this.pieceWidth * BLOCK_SIZE > width) {
       this.moveHorizontally(-1);
-      if (this.x + pieceWidth * BLOCK_SIZE - BLOCK_SIZE > width) {
+      if (this.x + this.pieceWidth * BLOCK_SIZE > width) {
         this.moveHorizontally(-1);
-        if (this.x + pieceWidth * BLOCK_SIZE - BLOCK_SIZE > width) {
+        if (this.x + this.pieceWidth * BLOCK_SIZE > width) {
           this.moveHorizontally(-1);
         }
       }
