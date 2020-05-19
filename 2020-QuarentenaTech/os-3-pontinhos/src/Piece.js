@@ -69,7 +69,7 @@ class Piece {
     return blocks;
   }
 
-  _forBlock(callback, onlyNotNull = true) {
+  forBlock(callback, onlyNotNull = true) {
     this.blocks.forEach((line, lineIndex) =>
       line.forEach((block, index) => {
         (!onlyNotNull || block) && callback({ block, index, line, lineIndex });
@@ -80,7 +80,7 @@ class Piece {
   moveHorizontally(direction = 1) {
     this.x += direction * BLOCK_SIZE;
 
-    this._forBlock(({ block }) => {
+    this.forBlock(({ block }) => {
       block.moveHorizontally(direction);
 <<<<<<< HEAD
       //block.show();
@@ -95,14 +95,14 @@ class Piece {
     const { length } = this.blocks[0];
     const newMatrix = Array.from({ length }).map(() => []);
 
-    this._forBlock(
+    this.forBlock(
       ({ block, index }) => newMatrix[index].unshift(block),
       false
     );
 
     this.blocks = newMatrix;
 
-    this._forBlock(({ block, index, lineIndex }) => {
+    this.forBlock(({ block, index, lineIndex }) => {
       block.x = this.x + index * BLOCK_SIZE;
       block.y = this.y + lineIndex * BLOCK_SIZE;
     });
@@ -123,7 +123,7 @@ class Piece {
   }
 
   show() {
-    this._forBlock(({ block }) => block.show());
+    this.forBlock(({ block }) => block.show());
 
     circle(this.x, this.y, 10);
     circle(this.x + this.width * BLOCK_SIZE, this.y, 10);
@@ -137,7 +137,7 @@ class Piece {
 
   gravity() {
     this.y += BLOCK_SIZE;
-    this._forBlock(({ block }) => block.gravity());
+    this.forBlock(({ block }) => block.gravity());
   }
 
   checkSideEdges() {
