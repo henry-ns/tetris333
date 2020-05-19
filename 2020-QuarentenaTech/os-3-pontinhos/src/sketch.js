@@ -27,11 +27,18 @@ function setup() {
     ArrowLeft: () => {
 =======
     ArrowLeft() {
+<<<<<<< HEAD
 >>>>>>> df22f14... :hammer: refac: piece sizes
       if (piece.checkSideEdges() != "l") piece.moveHorizontally(-1);
+=======
+      piece.moveHorizontally(-1);
+>>>>>>> f31dded... :hammer: refac: check side edges on piece
     },
     ArrowRight() {
-      if (piece.checkSideEdges() != "r") piece.moveHorizontally();
+      piece.moveHorizontally();
+    },
+    ArrowUp() {
+      piece.rotateClockwise();
     },
     a() {
       piece.rotateClockwise();
@@ -70,7 +77,7 @@ function draw() {
   piece.show();
   board.show();
 
-  if (piece.checkBottomEdge()) {
+  if (board.checkCollision(piece) || piece.checkBottomEdge()) {
     board.addPiece(piece);
     piece = new Piece(random(MODELS));
   }
