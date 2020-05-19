@@ -17,16 +17,20 @@ function setup() {
 
   moviments = {
 <<<<<<< HEAD
+<<<<<<< HEAD
     ArrowLeft: () => {
+=======
+    ArrowLeft() {
+>>>>>>> df22f14... :hammer: refac: piece sizes
       if (piece.checkSideEdges() != "l") piece.moveHorizontally(-1);
     },
-    ArrowRight: () => {
+    ArrowRight() {
       if (piece.checkSideEdges() != "r") piece.moveHorizontally();
     },
-    a: () => {
+    a() {
       piece.rotateClockwise();
     },
-    s: () => {
+    s() {
       piece.rotateAntiClockwise();
     },
 <<<<<<< HEAD
@@ -50,8 +54,8 @@ function setup() {
   };
 
   setInterval(() => {
-    piece.update();
-  }, TIME_INTERVAL);
+    piece.gravity();
+  }, TIME_INTERVAL * 0.2);
 }
 
 function draw() {
@@ -64,11 +68,7 @@ function draw() {
 }
 
 function keyPressed() {
-  /*
-  if(keyIsDown(lastKeyPressed)){
-    moviments[key]();
-  }
-  */
+  // if(keyIsDown(lastKeyPressed)) moviments[key](); 
 
   const moviment = moviments[key];
 
