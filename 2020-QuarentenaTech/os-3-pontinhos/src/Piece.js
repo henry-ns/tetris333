@@ -42,10 +42,14 @@ class Piece {
 <<<<<<< HEAD
 >>>>>>> fd288d9... :hammer: refac: inset piece into the board
   constructor({ shape, color, ...size }) {
+<<<<<<< HEAD
 =======
   constructor({ shape, color, ...size } = {}) {
 >>>>>>> b321553... :sparkles: feat: show phantom pieace
     this.x = width / 2 - BLOCK_SIZE;
+=======
+    this.x = game.width / 2 - BLOCK_SIZE;
+>>>>>>> 6a55371... refact: now the game is a p5 instance
     this.y = 0;
 
     this.width = size.width;
@@ -179,25 +183,46 @@ class Piece {
     for (let i = 0; i < 3; i++) {
       this.rotateClockwise();
     }
+<<<<<<< HEAD
 >>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
+=======
+  }
+
+  show() {
+    this.forBlock(({ block }) => block.show());
+
+    game.circle(this.x, this.y, 10);
+    game.circle(this.x + this.width * BLOCK_SIZE, this.y, 10);
+    game.circle(this.x, this.y + this.height * BLOCK_SIZE, 10);
+    game.circle(
+      this.x + this.width * BLOCK_SIZE,
+      this.y + this.height * BLOCK_SIZE,
+      10
+    );
+  }
+
+  gravity() {
+    this.y += BLOCK_SIZE;
+    this.forBlock(({ block }) => block.gravity());
+>>>>>>> 6a55371... refact: now the game is a p5 instance
   }
 
   checkSideEdges(direction) {
     const leftEdge = direction === -1 && this.x === 0;
 
     const rightEdge =
-      direction === 1 && this.x + this.width * BLOCK_SIZE === width;
+      direction === 1 && this.x + this.width * BLOCK_SIZE === game.width;
 
     return leftEdge || rightEdge;
   }
 
   // TODO: For refactor later
   checkPieceInBoard() {
-    if (this.x + this.width * BLOCK_SIZE > width) {
+    if (this.x + this.width * BLOCK_SIZE > game.width) {
       this.moveHorizontally(-1);
-      if (this.x + this.width * BLOCK_SIZE > width) {
+      if (this.x + this.width * BLOCK_SIZE > game.width) {
         this.moveHorizontally(-1);
-        if (this.x + this.width * BLOCK_SIZE > width) {
+        if (this.x + this.width * BLOCK_SIZE > game.width) {
           this.moveHorizontally(-1);
         }
       }
@@ -205,7 +230,7 @@ class Piece {
   }
 
   checkBottomEdge() {
-    return this.y + this.height * BLOCK_SIZE === height;
+    return this.y + this.height * BLOCK_SIZE === game.height;
   }
 
   show() {

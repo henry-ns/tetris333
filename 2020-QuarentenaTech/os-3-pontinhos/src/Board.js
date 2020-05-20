@@ -21,11 +21,15 @@ class Board {
   }
 
   _nextPiece() {
+<<<<<<< HEAD
     const model = MODELS[0]; // random(MODELS));
     this.currentPiece = new Piece(model);
     this.phantomPiece = new Piece(model);
 
     this._fistLineWithoutBlocks = this._findFirstLineWithoutBlocks();
+=======
+    this.currentPiece = new Piece(game.random(MODELS));
+>>>>>>> 6a55371... refact: now the game is a p5 instance
   }
 
   _addCurrentPiece() {
@@ -50,6 +54,7 @@ class Board {
   }
 
   _checkCompleteLines() {
+<<<<<<< HEAD
     const fullLineIndexes = [];
 
     this.matrix.forEach((line, index) => {
@@ -73,6 +78,15 @@ class Board {
         })
       );
     }
+=======
+    this.matrix.forEach((line) => {
+      // check if the line is full of blocks
+      // save line index if true
+      // re init the line
+    });
+
+    // Down blocks for the nummber of removed lines
+>>>>>>> 6a55371... refact: now the game is a p5 instance
   }
 
   _checkCollision() {
@@ -93,6 +107,7 @@ class Board {
   _drawBackground() {
     let [x, y] = [0, 0];
 
+<<<<<<< HEAD
     background(50);
 
     while (x < width) {
@@ -102,10 +117,22 @@ class Board {
 
     while (y < height) {
       line(0, y, width, y);
+=======
+    game.background(50);
+
+    while (x < game.width) {
+      game.line(x, 0, x, game.height);
+      x += BLOCK_SIZE;
+    }
+
+    while (y < game.height) {
+      game.line(0, y, game.width, y);
+>>>>>>> 6a55371... refact: now the game is a p5 instance
       y += BLOCK_SIZE;
     }
   }
 
+<<<<<<< HEAD
   _findFirstLineWithoutBlocks() {
     const { x, y, height, width } = this.currentPiece;
 
@@ -140,6 +167,8 @@ class Board {
     });
   }
 
+=======
+>>>>>>> 6a55371... refact: now the game is a p5 instance
   show() {
     this._drawBackground();
 

@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 let board;
 let lastKeyPressed;
 let interval;
+=======
+let gameSketch = function (p) {
+  let board;
+  let lastKeyPressed;
+>>>>>>> 6a55371... refact: now the game is a p5 instance
 
-function setup() {
-  createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
+  p.setup = function () {
+    p.createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   piece = new Piece({
@@ -83,18 +90,31 @@ function setup() {
 function stop() {
   clearInterval(interval);
 }
+=======
+    board = new Board({
+      width: BOARD_X,
+      height: BOARD_Y,
+    });
 
-function draw() {
-  board.show();
-}
+    setInterval(() => {
+      board.update();
+    }, TIME_INTERVAL);
+  };
+>>>>>>> 6a55371... refact: now the game is a p5 instance
 
-function keyPressed() {
-  // if(keyIsDown(lastKeyPressed)) moviments[key]();
+  p.draw = function () {
+    board.show();
+  };
 
-  const moved = board.movePiece(key);
+  p.keyPressed = function () {
+    // if(keyIsDown(lastKeyPressed)) moviments[key]();
 
-  if (moved) {
-    lastKeyPressed = key;
-  }
-}
+    const moved = board.movePiece(p.key);
 
+    if (moved) {
+      lastKeyPressed = p.key;
+    }
+  };
+};
+
+let game = new p5(gameSketch);
