@@ -1,6 +1,7 @@
 class Piece {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   constructor({ x = width / 2, y = 0, initialShape, color } = {}) {
     this.x = x;
 =======
@@ -19,6 +20,26 @@ class Piece {
     this.pieceWidth = pieceWidth;
     this.pieceHeight = pieceHeight;
 =======
+=======
+  moviments = {
+    ArrowLeft: () => {
+      this.moveHorizontally(-1);
+    },
+    ArrowRight: () => {
+      this.moveHorizontally();
+    },
+    ArrowUp: () => {
+      this.rotateClockwise();
+    },
+    a: () => {
+      this.rotateClockwise();
+    },
+    s: () => {
+      this.rotateAntiClockwise();
+    },
+  };
+
+>>>>>>> fd288d9... :hammer: refac: inset piece into the board
   constructor({ shape, color, ...size }) {
     this.x = width / 2 - BLOCK_SIZE;
     this.y = 0;

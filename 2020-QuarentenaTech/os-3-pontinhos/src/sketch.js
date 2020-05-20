@@ -1,11 +1,10 @@
-let piece;
-let lastKeyPressed;
-let moviments;
 let board;
+let lastKeyPressed;
 
 function setup() {
   createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   piece = new Piece({
     initialShape: SHAPES[4],// random(SHAPES),
@@ -16,11 +15,14 @@ function setup() {
   piece = new Piece(random(MODELS));
 >>>>>>> 98c5595... refact: changing how to storage each piece data
 
+=======
+>>>>>>> fd288d9... :hammer: refac: inset piece into the board
   board = new Board({
     width: BOARD_X,
     height: BOARD_Y,
   });
 
+<<<<<<< HEAD
   moviments = {
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -66,46 +68,24 @@ function setup() {
 >>>>>>> 6ac88e5... fix: fixing issue due the merge
   };
 
+=======
+>>>>>>> fd288d9... :hammer: refac: inset piece into the board
   setInterval(() => {
-    piece.gravity();
+    board.update();
   }, TIME_INTERVAL * 0.1);
 }
 
 function draw() {
-  drawBackground();
-
-  piece.show();
   board.show();
-
-  if (board.checkCollision(piece) || piece.checkBottomEdge()) {
-    board.addPiece(piece);
-    piece = new Piece(random(MODELS));
-  }
 }
 
 function keyPressed() {
   // if(keyIsDown(lastKeyPressed)) moviments[key]();
 
-  const moviment = moviments[key];
+  const moved = board.movePiece(key);
 
-  if (moviment) {
-    moviment();
+  if (moved) {
     lastKeyPressed = key;
   }
 }
 
-function drawBackground() {
-  let [x, y] = [0, 0];
-
-  background(50);
-
-  while (x < width) {
-    line(x, 0, x, height);
-    x += BLOCK_SIZE;
-  }
-
-  while (y < height) {
-    line(0, y, width, y);
-    y += BLOCK_SIZE;
-  }
-}
