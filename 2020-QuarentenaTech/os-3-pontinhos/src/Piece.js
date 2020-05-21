@@ -66,6 +66,7 @@ class Piece {
     return `#${decToHex()}${decToHex()}${decToHex()}`;
   }
 
+  // TODO: Refactor: use map function
   _initBlocks(model) {
     const blocks = [];
 
@@ -88,6 +89,13 @@ class Piece {
     });
 
     return blocks;
+  }
+
+  updateBlocksPosition() {
+    this.forBlock(({ block, index, lineIndex }) => {
+      block.x = this.x + index * BLOCK_SIZE;
+      block.y = this.y + lineIndex * BLOCK_SIZE;
+    });
   }
 
   forBlock(callback, onlyNotNull = true) {
@@ -117,6 +125,11 @@ class Piece {
 >>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
     });
   }
+  
+  gravity() {
+    this.y += BLOCK_SIZE;
+    this.forBlock(({ block }) => block.gravity());
+  }
 
   rotateClockwise() {
     this.height = [this.width, (this.width = this.height)][0];
@@ -128,6 +141,7 @@ class Piece {
 
     this.blocks = newMatrix;
 
+<<<<<<< HEAD
     this.forBlock(({ block, index, lineIndex }) => {
       block.x = this.x + index * BLOCK_SIZE;
       block.y = this.y + lineIndex * BLOCK_SIZE;
@@ -137,33 +151,20 @@ class Piece {
 =======
 >>>>>>> 79767dd... refact: added the piece width and height to piece class
 
+=======
+    this.updateBlocksPosition();
+    
+>>>>>>> 4d2d27a... :hammer: refact: organizing classes
     this.checkPieceInBoard();
 =======
   }
 
+  // TODO: For refactor later
   rotateAntiClockwise() {
     for (let i = 0; i < 3; i++) {
       this.rotateClockwise();
     }
 >>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
-  }
-
-  show() {
-    this.forBlock(({ block }) => block.show());
-
-    circle(this.x, this.y, 10);
-    circle(this.x + this.width * BLOCK_SIZE, this.y, 10);
-    circle(this.x, this.y + this.height * BLOCK_SIZE, 10);
-    circle(
-      this.x + this.width * BLOCK_SIZE,
-      this.y + this.height * BLOCK_SIZE,
-      10
-    );
-  }
-
-  gravity() {
-    this.y += BLOCK_SIZE;
-    this.forBlock(({ block }) => block.gravity());
   }
 
   checkSideEdges(direction) {
@@ -175,6 +176,7 @@ class Piece {
     return leftEdge || rightEdge;
   }
 
+  // TODO: For refactor later
   checkPieceInBoard() {
     if (this.x + this.width * BLOCK_SIZE > width) {
       this.moveHorizontally(-1);
@@ -189,5 +191,18 @@ class Piece {
 
   checkBottomEdge() {
     return this.y + this.height * BLOCK_SIZE === height;
+  }
+
+  show() {
+    this.forBlock(({ block }) => block.show());
+
+    circle(this.x, this.y, 10);
+    circle(this.x + this.width * BLOCK_SIZE, this.y, 10);
+    circle(this.x, this.y + this.height * BLOCK_SIZE, 10);
+    circle(
+      this.x + this.width * BLOCK_SIZE,
+      this.y + this.height * BLOCK_SIZE,
+      10
+    );
   }
 }
