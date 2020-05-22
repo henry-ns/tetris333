@@ -6,7 +6,12 @@ let interval;
 let gameSketch = function (p) {
   let board;
   let lastKeyPressed;
+<<<<<<< HEAD
 >>>>>>> 6a55371... refact: now the game is a p5 instance
+=======
+  let pauseLock = false;
+  let interval;
+>>>>>>> a4baced... chore: merge changes
 
   p.setup = function () {
     p.createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
@@ -96,7 +101,30 @@ function stop() {
       height: BOARD_Y,
     });
 
+<<<<<<< HEAD
     setInterval(() => {
+=======
+    p.playPause();
+  };
+
+  p.playPause = function () {
+    if (pauseLock) {
+      p.play();
+      pauseLock = false;
+    } else {
+      p.pause(interval);
+      pauseLock = true;
+    }
+  };
+
+  p.pause = function (interval) {
+    clearInterval(interval);
+    p.noLoop();
+  };
+
+  p.play = function () {
+    interval = setInterval(() => {
+>>>>>>> a4baced... chore: merge changes
       board.update();
     }, TIME_INTERVAL);
   };

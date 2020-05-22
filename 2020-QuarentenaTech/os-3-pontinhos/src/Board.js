@@ -6,18 +6,29 @@ class Board {
   constructor(sizes) {
     this.sizes = sizes;
 
+<<<<<<< HEAD
     this._initMatrix();
+=======
+>>>>>>> a4baced... chore: merge changes
     this._nextPiece();
   }
 
+<<<<<<< HEAD
   _initLine() {
     return Array.from({ length: this.sizes.width }).map(() => null);
+=======
+    this._initMatrix();
+>>>>>>> a4baced... chore: merge changes
   }
 
   _initMatrix() {
     this.matrix = Array.from({ length: this.sizes.height }).map(() =>
       this._initLine()
     );
+  }
+
+  _initLine() {
+    return Array.from({ length: this.sizes.width }).map(() => null);
   }
 
   _nextPiece() {
@@ -55,12 +66,16 @@ class Board {
 
   _checkCompleteLines() {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a4baced... chore: merge changes
     const fullLineIndexes = [];
 
     this.matrix.forEach((line, index) => {
       if (this._isLineFilled(line)) {
         fullLineIndexes.push(index);
       }
+<<<<<<< HEAD
     });
 
     const { length } = fullLineIndexes;
@@ -87,6 +102,25 @@ class Board {
 
     // Down blocks for the nummber of removed lines
 >>>>>>> 6a55371... refact: now the game is a p5 instance
+=======
+    });
+
+    const { length } = fullLineIndexes;
+
+    if (length) {
+      this.matrix.splice(fullLineIndexes[0], length);
+      fullLineIndexes.forEach(() => this.matrix.unshift(this._initLine()));
+
+      this.matrix.forEach((line, yIndex) =>
+        line.forEach((block, xIndex) => {
+          if (block) {
+            block.x = xIndex * BLOCK_SIZE;
+            block.y = yIndex * BLOCK_SIZE;
+          }
+        })
+      );
+    }
+>>>>>>> a4baced... chore: merge changes
   }
 
   _checkCollision() {
