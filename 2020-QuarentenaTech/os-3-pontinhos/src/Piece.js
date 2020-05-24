@@ -130,6 +130,13 @@ class Piece {
     });
   }
 
+  dropTo(yPosition) {
+    const y = (yPosition - this.height) * BLOCK_SIZE;
+    
+    this.y = y;
+    this.updateBlocksPosition();
+  }
+
   gravity() {
     this.y += BLOCK_SIZE;
     this.forBlock(({ block }) => block.gravity());
@@ -157,8 +164,12 @@ class Piece {
 
 =======
     this.updateBlocksPosition();
+<<<<<<< HEAD
     
 >>>>>>> 4d2d27a... :hammer: refact: organizing classes
+=======
+
+>>>>>>> 03eef8d... :sparkles: feat: hard drop moviment
     this.checkPieceInBoard();
 =======
   }

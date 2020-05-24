@@ -77,7 +77,7 @@ function setup() {
   interval = setInterval(() => {
 >>>>>>> 15b6376... :sparkles: feat: check complete lines
     board.update();
-  }, TIME_INTERVAL * 0.1);
+  }, TIME_INTERVAL * 1);
 }
 
 function stop() {
