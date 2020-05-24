@@ -39,8 +39,12 @@ class Piece {
     },
   };
 
+<<<<<<< HEAD
 >>>>>>> fd288d9... :hammer: refac: inset piece into the board
   constructor({ shape, color, ...size }) {
+=======
+  constructor({ shape, color, ...size } = {}) {
+>>>>>>> b321553... :sparkles: feat: show phantom pieace
     this.x = width / 2 - BLOCK_SIZE;
     this.y = 0;
 
@@ -125,7 +129,7 @@ class Piece {
 >>>>>>> 521ba44... :sparkles: feat: anticlockwise rotate function
     });
   }
-  
+
   gravity() {
     this.y += BLOCK_SIZE;
     this.forBlock(({ block }) => block.gravity());
