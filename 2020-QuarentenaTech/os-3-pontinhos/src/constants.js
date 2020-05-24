@@ -5,6 +5,7 @@ const BLOCK_SIZE = 40;
 const TIME_INTERVAL = 1000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const SHAPES = [
   [
     [1, 1, 1, 1],
@@ -12,6 +13,11 @@ const SHAPES = [
   [
     [1, 0, 0],
 =======
+=======
+const MENU_X = 200;
+const MENU_Y = BOARD_Y * BLOCK_SIZE;
+
+>>>>>>> 236d410... feat: off game menu
 const I_MODEL = {
   shape: [[1, 1, 1, 1]],
   color: "#00ADEE",
