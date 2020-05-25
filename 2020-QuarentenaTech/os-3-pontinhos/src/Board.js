@@ -34,7 +34,11 @@ class Board {
 
   _nextPiece() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     const model = MODELS[0]; // random(MODELS));
+=======
+    const model = MODELS[0]; // game.random(MODELS);
+>>>>>>> 17268fd... feat: point accounting
     this.currentPiece = new Piece(model);
     this.phantomPiece = new Piece(model);
 
@@ -136,6 +140,7 @@ class Board {
     });
 
     const { length } = fullLineIndexes;
+    this._addPoints(length - 1);
 
     if (length) {
       this.matrix.splice(fullLineIndexes[0], length);
@@ -234,8 +239,20 @@ class Board {
     });
   }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 6a55371... refact: now the game is a p5 instance
+=======
+  qtyPoints = [40, 100, 300, 1200];
+
+  _addPoints(multiplier) {
+    if (multiplier >= 0) {
+      let point = this.qtyPoints[multiplier];
+      game.points += point;
+    }
+  }
+
+>>>>>>> 17268fd... feat: point accounting
   show() {
     this._drawBackground();
 

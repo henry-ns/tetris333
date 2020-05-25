@@ -15,6 +15,7 @@ let gameSketch = function (p) {
 
   p.setup = () => {
     p.createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
+    p.points = 0;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -126,8 +127,6 @@ function stop() {
   p.pause = (interval) => {
     clearInterval(interval);
     p.noLoop();
-
-    console.log("pause time");
   };
 
   p.play = () => {
@@ -143,7 +142,6 @@ function stop() {
 >>>>>>> beb9a31... :beetle: fix: some bugs by merge conflicts
     p.loop();
 
-    console.log("play time");
     return interval;
 >>>>>>> 236d410... feat: off game menu
   };
@@ -151,6 +149,7 @@ function stop() {
 
   p.draw = () => {
     board.show();
+    //console.log(p.points);
   };
 
   p.keyPressed = () => {
@@ -253,7 +252,7 @@ function sideBar(p) {
       x: p.width / 2 - (p.width * 0.8) / 2,
       y: 400 + 200,
       text1: "Points",
-      text2: "100000000000000000000",
+      text2: `${game.points}`,
     });
 
     // Config menu buttons
@@ -395,5 +394,5 @@ function sideBar(p) {
   };
 }
 
-let menu = new p5(sideBar);
+//let menu = new p5(sideBar);
 let game = new p5(gameSketch);
