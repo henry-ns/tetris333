@@ -13,7 +13,7 @@ let gameSketch = function (p) {
   let interval;
 >>>>>>> a4baced... chore: merge changes
 
-  p.setup = function () {
+  p.setup = () => {
     p.createCanvas(BOARD_X * BLOCK_SIZE, BOARD_Y * BLOCK_SIZE);
 
 <<<<<<< HEAD
@@ -105,9 +105,15 @@ function stop() {
     setInterval(() => {
 =======
     p.playPause();
+
+    // setInterval(() => {
+    //   if (keyIsDown(lastKeyPressed)) {
+    //     board.movePiece(lastKeyPressed);
+    //   }
+    // }, TIME_INTERVAL * 0.2);
   };
 
-  p.playPause = function () {
+  p.playPause = () => {
     if (pauseLock) {
       p.play();
       pauseLock = false;
@@ -117,20 +123,24 @@ function stop() {
     }
   };
 
-  p.pause = function (interval) {
+  p.pause = (interval) => {
     clearInterval(interval);
     p.noLoop();
 
     console.log("pause time");
   };
 
-  p.play = function () {
+  p.play = () => {
     interval = setInterval(() => {
 >>>>>>> a4baced... chore: merge changes
       board.update();
     }, TIME_INTERVAL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+>>>>>>> beb9a31... :beetle: fix: some bugs by merge conflicts
     p.loop();
 
     console.log("play time");
@@ -139,17 +149,18 @@ function stop() {
   };
 >>>>>>> 6a55371... refact: now the game is a p5 instance
 
-  p.draw = function () {
+  p.draw = () => {
     board.show();
   };
 
-  p.keyPressed = function () {
-    // if(keyIsDown(lastKeyPressed)) moviments[key]();
+  p.keyPressed = () => {
+    const moviments = [p.LEFT_ARROW, p.RIGHT_ARROW, p.DOWN_ARROW];
 
-    const moved = board.movePiece(p.key);
+    const moved = board.movePiece(p.keyCode);
+    // console.log(p.keyCode);
 
-    if (moved) {
-      lastKeyPressed = p.key;
+    if (moved && moviments.includes(p.keyCode)) {
+      lastKeyPressed = p.keyCode;
     }
   };
 };
@@ -164,7 +175,7 @@ function sideBar(p) {
   let grid = true;
   let ghostPiece = true;
 
-  p.setup = function () {
+  p.setup = () => {
     p.createCanvas(MENU_X, MENU_Y);
 
     playButton = new Clickable({
@@ -204,26 +215,26 @@ function sideBar(p) {
       strokeWeight: 0,
     });
 
-    playButton.onPress = function () {
+    playButton.onPress = () => {
       setTimeout(() => {
         state = 1;
         console.log("Game Start");
       }, 0);
     };
-    settingsButton.onPress = function () {
+    settingsButton.onPress = () => {
       state = 2;
       console.log("Configurações");
     };
-    helpButton.onPress = function () {
+    helpButton.onPress = () => {
       state = 3;
       console.log("Ajuda");
     };
 
-    returnButton.onPress = function () {
+    returnButton.onPress = () => {
       state = 0;
     };
 
-    //In game menu infobox
+    // In game menu infobox
     difficultyBox = new infoBox({
       x: p.width / 2 - (p.width * 0.8) / 2,
       y: 400,
@@ -245,7 +256,7 @@ function sideBar(p) {
       text2: "100000000000000000000",
     });
 
-    //Config menu buttons
+    // Config menu buttons
     changeDifficultyButton = new Clickable({
       x: MENU_X / 2 - (buttonWidth * 0.8) / 2,
       y: MENU_Y / 2 - buttonHeight / 2 - 55,
@@ -254,7 +265,7 @@ function sideBar(p) {
       text: `Dificuldade: ${difficulty}`,
       textSize: 16,
     });
-    changeDifficultyButton.onPress = function () {
+    changeDifficultyButton.onPress = () => {
       console.log(difficulty);
       if (difficulty === "fácil") {
         difficulty = "médio";
@@ -276,7 +287,7 @@ function sideBar(p) {
       text: `GhostPiece: ${ghostPiece ? "on" : "off"}`,
       textSize: 16,
     });
-    changeGhostPieceButton.onPress = function () {
+    changeGhostPieceButton.onPress = () => {
       if (ghostPiece) {
         ghostPiece = false;
         changeGhostPieceButton.text = `GhostPiece: ${
@@ -298,7 +309,7 @@ function sideBar(p) {
       text: `Grid: ${grid ? "on" : "off"}`,
       textSize: 16,
     });
-    changeGridButton.onPress = function () {
+    changeGridButton.onPress = () => {
       if (grid) {
         grid = false;
         changeGridButton.text = `Grid: ${grid ? "on" : "off"}`;
@@ -308,7 +319,7 @@ function sideBar(p) {
       }
     };
 
-    //Help menu
+    // Help menu
     movementBox = new infoBox({
       x: p.width / 2 - (p.width * 0.8) / 2,
       y: 100,
@@ -331,49 +342,49 @@ function sideBar(p) {
     piece = new Piece(p.random(MODELS));
   };
 
-  p.draw = function () {
+  p.draw = () => {
     p.background(42);
 
-    //Off game menu state
+    // Off game menu state
     if (state === 0) {
       playButton.draw();
       settingsButton.draw();
       helpButton.draw();
     }
-    //In game state
+    // In game state
     if (state === 1) {
-      //Game starts
+      // Game starts
 
-      //Show next piece
+      // Show next piece
 
       p.fill(210);
       p.rect(p.width / 2 - (p.width * 0.8) / 2, 100, p.width * 0.8, 200);
 
-      // Show difficulty
+      //  Show difficulty
       difficultyBox.show();
 
-      //Show level
+      // Show level
       levelBox.show();
 
-      //Show points
+      // Show points
       pointBox.show();
 
       returnButton.draw();
     }
-    //Configurations state
+    // Configurations state
     if (state === 2) {
-      //change difficulty
+      // change difficulty
       changeDifficultyButton.draw();
 
-      //turn on/off ghost piece
+      // turn on/off ghost piece
       changeGhostPieceButton.draw();
 
-      //turn on/off grid
+      // turn on/off grid
       changeGridButton.draw();
 
       returnButton.draw();
     }
-    //Help state
+    // Help state
     if (state === 3) {
       movementBox.show();
       rotationBox.show();

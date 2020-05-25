@@ -22,19 +22,19 @@ class Piece {
 =======
 =======
   moviments = {
-    ArrowLeft: () => {
+    [game.LEFT_ARROW]: () => {
       this.moveHorizontally(-1);
     },
-    ArrowRight: () => {
+    [game.RIGHT_ARROW]: () => {
       this.moveHorizontally();
     },
-    ArrowUp: () => {
+    [game.UP_ARROW]: () => {
       this.rotateClockwise();
     },
-    a: () => {
+    [KEY_A]: () => {
       this.rotateClockwise();
     },
-    s: () => {
+    [KEY_S]: () => {
       this.rotateAntiClockwise();
     },
   };
@@ -201,12 +201,15 @@ class Piece {
     );
   }
 
+<<<<<<< HEAD
   gravity() {
     this.y += BLOCK_SIZE;
     this.forBlock(({ block }) => block.gravity());
 >>>>>>> 6a55371... refact: now the game is a p5 instance
   }
 
+=======
+>>>>>>> beb9a31... :beetle: fix: some bugs by merge conflicts
   checkSideEdges(direction) {
     const leftEdge = direction === -1 && this.x === 0;
 
