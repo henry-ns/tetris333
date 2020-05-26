@@ -130,6 +130,7 @@ function stop() {
   };
 
   p.play = () => {
+<<<<<<< HEAD
     interval = setInterval(() => {
 >>>>>>> a4baced... chore: merge changes
       board.update();
@@ -144,22 +145,38 @@ function stop() {
 
     return interval;
 >>>>>>> 236d410... feat: off game menu
+=======
+    if (!board.checkEndGame()) {
+      interval = setInterval(() => {
+        board.update();
+      }, TIME_INTERVAL * 0.2);
+
+      p.loop();
+
+      return interval;
+    }
+>>>>>>> 01c85a5... feat: end game check
   };
 >>>>>>> 6a55371... refact: now the game is a p5 instance
 
   p.draw = () => {
     board.show();
+    if (board.checkEndGame()) {
+      p.playPause();
+    }
     //console.log(p.points);
   };
 
   p.keyPressed = () => {
-    const moviments = [p.LEFT_ARROW, p.RIGHT_ARROW, p.DOWN_ARROW];
+    if (!pauseLock || p.keyCode === KEY_Q) {
+      const moviments = [p.LEFT_ARROW, p.RIGHT_ARROW, p.DOWN_ARROW];
 
-    const moved = board.movePiece(p.keyCode);
-    // console.log(p.keyCode);
+      const moved = board.movePiece(p.keyCode);
+      // console.log(p.keyCode);
 
-    if (moved && moviments.includes(p.keyCode)) {
-      lastKeyPressed = p.keyCode;
+      if (moved && moviments.includes(p.keyCode)) {
+        lastKeyPressed = p.keyCode;
+      }
     }
   };
 };

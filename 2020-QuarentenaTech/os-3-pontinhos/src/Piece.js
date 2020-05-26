@@ -49,8 +49,12 @@ class Piece {
     this.x = width / 2 - BLOCK_SIZE;
 =======
     this.x = game.width / 2 - BLOCK_SIZE;
+<<<<<<< HEAD
 >>>>>>> 6a55371... refact: now the game is a p5 instance
     this.y = 0;
+=======
+    this.y = -2 * BLOCK_SIZE;
+>>>>>>> 01c85a5... feat: end game check
 
     this.width = size.width;
     this.height = size.height;
