@@ -8,6 +8,10 @@ class Board {
     this.sizes = sizes;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    this.createPieceStack();
+>>>>>>> 2821b7f... feat: next piece preview
     this._initMatrix();
 =======
 >>>>>>> a4baced... chore: merge changes
@@ -28,6 +32,7 @@ class Board {
     );
   }
 
+<<<<<<< HEAD
   _initLine() {
     return Array.from({ length: this.sizes.width }).map(() => null);
   }
@@ -47,6 +52,19 @@ class Board {
 >>>>>>> 01c85a5... feat: end game check
     this.currentPiece = new Piece(model);
     this.phantomPiece = new Piece(model);
+=======
+  createPieceStack() {
+    this.pieceStack = [];
+    this.pieceStack.push(new Piece(game.random(MODELS)));
+    this.pieceStack.push(new Piece(game.random(MODELS)));
+  }
+
+  _nextPiece() {
+    this.nextPiece = this.pieceStack[1];
+    this.currentPiece = this.pieceStack.splice(0, 1)[0];
+
+    this.pieceStack.push(new Piece(game.random(MODELS)));
+>>>>>>> 2821b7f... feat: next piece preview
 
     this._fistLineWithoutBlocks = this._findFirstLineWithoutBlocks();
 =======

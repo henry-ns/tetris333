@@ -164,6 +164,7 @@ function stop() {
     if (board.checkEndGame()) {
       p.playPause();
     }
+    //console.log(board.nextPiece.blocks);
     //console.log(p.points);
   };
 
