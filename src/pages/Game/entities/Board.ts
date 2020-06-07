@@ -79,17 +79,24 @@ class Board {
 
   // TODO: to refactor
   private createPhantomPiece(): Piece {
-    const { color, shape, height, width, blocks, pos } = this.currentPiece;
+    const { shape, height, width, pos } = this.currentPiece;
+
+    const color = opacify(-0.7, this.currentPiece.color);
+
+    const blocks = this.currentPiece.blocks.map((block) => ({
+      pos: block.pos,
+      color,
+    }));
 
     const phantomPiece = new Piece(this.canvas, {
-      color: opacify(-0.7, color),
-      shape,
+      blocks,
       height,
       width,
+      color,
+      shape,
     });
 
-    phantomPiece.blocks = [...blocks];
-    phantomPiece.pos.set(pos);
+    phantomPiece.pos.x = pos.x;
 
     while (
       !this.checkCollision(phantomPiece) &&

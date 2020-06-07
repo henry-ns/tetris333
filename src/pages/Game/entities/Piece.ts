@@ -14,6 +14,7 @@ export interface Moviments {
 }
 
 interface CreatePiace {
+  blocks?: Block[];
   shape: Shape;
   color: string;
   width: number;
@@ -37,12 +38,10 @@ class Piece {
 
   constructor(
     private canvas: P5,
-    { shape, color, width, height }: CreatePiace,
+    { blocks, shape, color, width, height }: CreatePiace,
   ) {
     const x = this.canvas.width / 2 - BLOCK_SIZE;
     const y = /*  -2 or -this.canvas.height *  */ BLOCK_SIZE;
-
-    this.pos = this.canvas.createVector(x, y);
 
     this.color = color;
     this.shape = shape;
@@ -50,13 +49,14 @@ class Piece {
     this.width = width;
     this.height = height;
 
-    this.blocks = this.initBlocks(shape);
+    this.pos = this.canvas.createVector(x, y);
+    this.blocks = blocks || this.initBlocks(shape);
 
     this.moviments = {
-      [canvas.LEFT_ARROW]: () => this.moveHorizontally(-1),
-      [canvas.RIGHT_ARROW]: () => this.moveHorizontally(),
-      [canvas.UP_ARROW]: () => this.rotateClockwise(),
-      [canvas.DOWN_ARROW]: () => this.gravity(),
+      [this.canvas.LEFT_ARROW]: () => this.moveHorizontally(-1),
+      [this.canvas.RIGHT_ARROW]: () => this.moveHorizontally(),
+      [this.canvas.UP_ARROW]: () => this.rotateClockwise(),
+      [this.canvas.DOWN_ARROW]: () => this.gravity(),
 
       [KEYS.A]: () => this.rotateClockwise(),
       [KEYS.S]: () => this.rotateAntiClockwise(),
