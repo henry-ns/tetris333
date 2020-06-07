@@ -4,9 +4,13 @@ import { KEYS, BLOCK_SIZE } from '../../../utils/constants';
 
 type Shape = number[][];
 
-interface Block {
+export interface Block {
   pos: P5.Vector;
   color: string;
+}
+
+export interface Moviments {
+  [key: number]: () => void;
 }
 
 interface CreatePiace {
@@ -14,10 +18,6 @@ interface CreatePiace {
   color: string;
   width: number;
   height: number;
-}
-
-interface Moviments {
-  [key: number]: () => void;
 }
 
 class Piece {
@@ -53,15 +53,13 @@ class Piece {
     this.blocks = this.initBlocks(shape);
 
     this.moviments = {
-      [canvas.DOWN_ARROW]: () => {
-        this.gravity();
-      },
-      [canvas.RIGHT_ARROW]: () => {
-        this.rotateClockwise();
-      },
-      [canvas.LEFT_ARROW]: () => {
-        this.rotateAntiClockwise();
-      },
+      [canvas.LEFT_ARROW]: () => this.moveHorizontally(-1),
+      [canvas.RIGHT_ARROW]: () => this.moveHorizontally(),
+      [canvas.UP_ARROW]: () => this.rotateClockwise(),
+      [canvas.DOWN_ARROW]: () => this.gravity(),
+
+      [KEYS.A]: () => this.rotateClockwise(),
+      [KEYS.S]: () => this.rotateAntiClockwise(),
     };
   }
 
@@ -173,8 +171,6 @@ class Piece {
   showBlock(block: Block): void {
     const blockPos = P5.Vector.mult(block.pos, BLOCK_SIZE);
     const { x, y } = P5.Vector.add(this.pos, blockPos);
-
-    // const { x, y } = P5.Vector.add(this.pos, block.pos);
 
     this.canvas.fill(block.color);
     this.canvas.rect(x, y, BLOCK_SIZE, BLOCK_SIZE);

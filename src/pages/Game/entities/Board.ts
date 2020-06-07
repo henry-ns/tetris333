@@ -5,16 +5,11 @@ import { ConfigData } from '../../../hooks/config';
 import theme from '../../../styles/themes';
 import { KEYS, MODELS, BLOCK_SIZE, POINTS } from '../../../utils/constants';
 import sounds from '../../../utils/sounds';
-import Block from './Block';
-import Piece from './Piece';
+import Piece, { Block, Moviments } from './Piece';
 
 interface Sizes {
   height: number;
   width: number;
-}
-
-interface Moviments {
-  [key: number]: () => void;
 }
 
 type LineOfBlocks = (Block | null)[];
@@ -58,13 +53,10 @@ class Board {
     this.displayPoints();
 
     this.moviments = {
+      [this.canvas.LEFT_ARROW]: () => this.moveHorizontally(-1),
+      [this.canvas.RIGHT_ARROW]: () => this.moveHorizontally(),
+
       [KEYS.D]: () => this.hardDrop(),
-      [this.canvas.LEFT_ARROW]: () => {
-        this.moveHorizontally(-1);
-      },
-      [this.canvas.RIGHT_ARROW]: () => {
-        this.moveHorizontally();
-      },
     };
   }
 
@@ -85,8 +77,9 @@ class Board {
     return new Piece(this.canvas, this.canvas.random(MODELS));
   }
 
+  // TODO: to refactor
   private createPhantomPiece(): Piece {
-    const { color, shape, height, width, x, y } = this.currentPiece;
+    const { color, shape, height, width, blocks, pos } = this.currentPiece;
 
     const phantomPiece = new Piece(this.canvas, {
       color: opacify(-0.7, color),
@@ -95,10 +88,8 @@ class Board {
       width,
     });
 
-    phantomPiece.x = x;
-    phantomPiece.y = y;
-
-    phantomPiece.updateBlocksPosition();
+    phantomPiece.blocks = [...blocks];
+    phantomPiece.pos.set(pos);
 
     while (
       !this.checkCollision(phantomPiece) &&
@@ -123,14 +114,17 @@ class Board {
   }
 
   private addCurrentPiece(): void {
-    this.currentPiece.forBlock(({ block }) => {
-      if (block) {
-        const xIndex = block.x / BLOCK_SIZE;
-        const yIndex = block.y / BLOCK_SIZE;
+    this.currentPiece.blocks.forEach((block) => {
+      const blockIndex = P5.Vector.div(this.currentPiece.pos, BLOCK_SIZE);
+      const { x, y } = blockIndex.add(block.pos);
 
-        if (yIndex >= 0) {
-          this.matrix[yIndex][xIndex] = block;
-        }
+      // const blockPos = P5.Vector.mult(block.pos, BLOCK_SIZE);
+      // blockPos.add(this.currentPiece.pos);
+
+      // const { x, y } = blockPos.div(BLOCK_SIZE);
+
+      if (y >= 0) {
+        this.matrix[y][x] = block;
       }
     });
 
@@ -155,12 +149,8 @@ class Board {
 
   private hardDrop(): void {
     if (!this.checkEndGame()) {
-      const { x, y } = this.phantomPiece;
-
-      this.currentPiece.x = x;
-      this.currentPiece.y = y;
-
-      this.currentPiece.updateBlocksPosition();
+      const { x, y } = this.phantomPiece.pos;
+      this.currentPiece.pos.set(x, y);
 
       this.addCurrentPiece();
       this.getNextPiece();
@@ -200,7 +190,7 @@ class Board {
             const newX = xIndex * BLOCK_SIZE;
             const newY = yIndex * BLOCK_SIZE;
 
-            block.setPosition(newX, newY);
+            // block.setPosition(newX, newY);
           }
         }),
       );
@@ -211,14 +201,12 @@ class Board {
     let isCollide = false;
 
     // TODO: check the if
-    piece.forBlock(({ block }) => {
-      if (block) {
-        const x = block.x / BLOCK_SIZE;
-        const y = block.y / BLOCK_SIZE + 1;
+    piece.blocks.forEach((block) => {
+      const x = block.pos.x / BLOCK_SIZE;
+      const y = block.pos.y / BLOCK_SIZE + 1;
 
-        if (this.matrix[y] && this.matrix[y][x]) {
-          isCollide = true;
-        }
+      if (this.matrix[y] && this.matrix[y][x]) {
+        isCollide = true;
       }
     });
 
@@ -228,14 +216,12 @@ class Board {
   private checkSideCollision(direction = 1): boolean {
     let isCollide = false;
 
-    this.currentPiece.forBlock(({ block }) => {
-      if (block) {
-        const xIndex = block.x / BLOCK_SIZE + direction;
-        const yIndex = block.y / BLOCK_SIZE;
+    this.currentPiece.blocks.forEach((block) => {
+      const x = block.pos.x / BLOCK_SIZE + direction;
+      const y = block.pos.y / BLOCK_SIZE;
 
-        if (this.matrix[yIndex] && this.matrix[yIndex][xIndex]) {
-          isCollide = true;
-        }
+      if (this.matrix[y] && this.matrix[y][x]) {
+        isCollide = true;
       }
     });
 
@@ -272,11 +258,11 @@ class Board {
         gb.noStroke();
       }
 
-      this.nextPiece.forBlock(({ block, index, lineIndex }) => {
-        if (block) {
-          gb.fill(block.color);
-          gb.rect(index * scale, lineIndex * scale, scale, scale);
-        }
+      this.nextPiece.blocks.forEach((block) => {
+        const { x, y } = block.pos;
+
+        gb.fill(block.color);
+        gb.rect(x * scale, y * scale, scale, scale);
       });
 
       const img = document.getElementById('nextPiece') as HTMLImageElement;
@@ -295,6 +281,13 @@ class Board {
     }
   }
 
+  private showBlock(block: Block): void {
+    const { x, y } = block.pos;
+
+    this.canvas.fill(block.color);
+    this.canvas.rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+  }
+
   show(): void {
     this.drawBackground();
 
@@ -302,9 +295,9 @@ class Board {
       this.canvas.noStroke();
     }
 
-    this.matrix.forEach((line) => {
-      line.forEach((block) => block?.show(this.canvas));
-    });
+    this.matrix.forEach((line) =>
+      line.forEach((block) => block && this.showBlock(block)),
+    );
 
     if (this.config.phantomPieceEnabled) {
       this.phantomPiece.show();
@@ -339,8 +332,6 @@ class Board {
     }
 
     this.phantomPiece = this.createPhantomPiece();
-
-    // sounds.pieceMovement.play();
 
     return !!moviment;
   }
