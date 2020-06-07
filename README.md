@@ -52,10 +52,9 @@
 </p>
 
 ---
-## :construction_worker: Time: Os 3 pontinhos
+## :construction_worker: Maintainers
 - **Henrique** - @henry-ns
 - **Felipe**  - @felipefbs
-- **~~Gabriel~~** - (Desistiu :disappointed:)
 
 ## :clipboard: Descrição
 
