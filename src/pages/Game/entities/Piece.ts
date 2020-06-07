@@ -84,77 +84,71 @@ class Piece {
     return blocks;
   }
 
-  /**
-   * direction = 1  -> right
-   * direction = -1 -> left
-   */
-  /**
-  moveHorizontally(direction = 1): void {
-    if (this.checkSideEdges(direction)) {
-      return;
-    }
-
-    this.x += direction * BLOCK_SIZE;
-
-    this.forBlock(({ block }) => {
-      block?.moveHorizontally(direction);
-    });
-  }
-
-  dropTo(yPosition: number): void {
-    const y = (yPosition - this.height) * BLOCK_SIZE;
-
-    this.y = y;
-    this.updateBlocksPosition();
-  }
-
   checkSideEdges(direction: number): boolean {
-    const leftEdge = direction === -1 && this.x === 0;
+    const leftEdge = direction === -1 && this.pos.x === 0;
 
     const rightEdge =
-      direction === 1 && this.x + this.width * BLOCK_SIZE === this.canvas.width;
+      direction === 1 &&
+      this.pos.x + this.width * BLOCK_SIZE === this.canvas.width;
 
     return leftEdge || rightEdge;
   }
 
   // TODO: For refactor later
   checkPieceInBoard(): void {
-    while (this.x + this.width * BLOCK_SIZE > this.canvas.width) {
+    while (this.pos.x + this.width * BLOCK_SIZE > this.canvas.width) {
       this.moveHorizontally(-1);
     }
   }
 
   checkBottomEdge(): boolean {
-    return this.y + this.height * BLOCK_SIZE === this.canvas.height;
+    return this.pos.y + this.height * BLOCK_SIZE === this.canvas.height;
   }
-   */
 
-  private rotateClockwise(): void {
+  rotateClockwise(): void {
     [this.height] = [this.width, (this.width = this.height)];
 
     // this.blocks.forEach((block) => console.log(block.pos));
 
     this.blocks.forEach((block) => {
-      const { x, y } = block.pos;
+      const x = block.pos.y;
+      const y = this.height - 1 - block.pos.x;
 
-      block.pos.x = y;
-      block.pos.y = this.height - 1 - x;
+      block.pos.set(x, y);
 
       // block.pos.rotate(Math.PI / 2);
     });
   }
 
-  private rotateAntiClockwise(): void {
+  rotateAntiClockwise(): void {
     [this.width] = [this.height, (this.height = this.width)];
 
     this.blocks.forEach((block) => {
-      const { x, y } = block.pos;
+      const x = this.width - 1 - block.pos.y;
+      const y = block.pos.x;
 
-      block.pos.x = this.width - 1 - y;
-      block.pos.y = x;
+      block.pos.set(x, y);
 
       // block.pos.rotate((3 * Math.PI) / 2);
     });
+  }
+
+  /**
+   * direction = 1  -> right
+   * direction = -1 -> left
+   */
+  moveHorizontally(direction = 1): void {
+    if (this.checkSideEdges(direction)) {
+      return;
+    }
+
+    this.pos.x += direction * BLOCK_SIZE;
+  }
+
+  dropTo(yPosition: number): void {
+    const y = (yPosition - this.height) * BLOCK_SIZE;
+
+    this.pos.y = y;
   }
 
   gravity(): void {
