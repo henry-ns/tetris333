@@ -115,16 +115,19 @@ class Board {
 
   private addCurrentPiece(): void {
     this.currentPiece.blocks.forEach((block) => {
-      const blockIndex = P5.Vector.div(this.currentPiece.pos, BLOCK_SIZE);
-      const { x, y } = blockIndex.add(block.pos);
+      // const blockIndex = P5.Vector.div(this.currentPiece.pos, BLOCK_SIZE);
+      // const { x, y } = blockIndex.add(block.pos);
 
-      // const blockPos = P5.Vector.mult(block.pos, BLOCK_SIZE);
-      // blockPos.add(this.currentPiece.pos);
+      const pos = P5.Vector.mult(block.pos, BLOCK_SIZE);
+      pos.add(this.currentPiece.pos);
 
-      // const { x, y } = blockPos.div(BLOCK_SIZE);
+      const { x, y } = P5.Vector.div(pos, BLOCK_SIZE);
 
       if (y >= 0) {
-        this.matrix[y][x] = block;
+        this.matrix[y][x] = {
+          color: block.color,
+          pos,
+        };
       }
     });
 
@@ -165,7 +168,6 @@ class Board {
     this.currentPiece.moveHorizontally(direction);
   }
 
-  // TODO: CHECK
   private checkCompleteLines(): void {
     const fullLineIndexes: number[] = [];
 
@@ -187,10 +189,8 @@ class Board {
       this.matrix.forEach((line, yIndex) =>
         line.forEach((block, xIndex) => {
           if (block) {
-            const newX = xIndex * BLOCK_SIZE;
-            const newY = yIndex * BLOCK_SIZE;
-
-            // block.setPosition(newX, newY);
+            block.pos.set(xIndex, yIndex);
+            block.pos.mult(BLOCK_SIZE);
           }
         }),
       );

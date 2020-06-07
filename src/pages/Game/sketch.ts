@@ -61,6 +61,7 @@ function createSketch(config: ConfigData): Sketch {
 
     p.draw = () => {
       board.show();
+
       if (board.checkEndGame()) {
         const gameOverText = document.getElementById('gameOverText');
 
