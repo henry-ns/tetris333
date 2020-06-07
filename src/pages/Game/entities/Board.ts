@@ -2,10 +2,13 @@ import P5 from 'p5';
 import { opacify } from 'polished';
 
 import { ConfigData } from '../../../hooks/config';
-import theme from '../../../styles/themes';
+
 import { KEYS, MODELS, BLOCK_SIZE, POINTS } from '../../../utils/constants';
 import sounds from '../../../utils/sounds';
+
 import Piece, { Block, Moviments } from './Piece';
+
+import theme from '../../../styles/themes';
 
 interface Sizes {
   height: number;
@@ -207,10 +210,9 @@ class Board {
   private checkCollision(piece = this.currentPiece): boolean {
     let isCollide = false;
 
-    // TODO: check the if
     piece.blocks.forEach((block) => {
-      const x = block.pos.x / BLOCK_SIZE;
-      const y = block.pos.y / BLOCK_SIZE + 1;
+      const x = this.currentPiece.pos.x / BLOCK_SIZE + block.pos.x;
+      const y = this.currentPiece.pos.y / BLOCK_SIZE + block.pos.y + 1;
 
       if (this.matrix[y] && this.matrix[y][x]) {
         isCollide = true;
