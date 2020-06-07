@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Layout from '../../components/Layout';
-import SubTitle from '../../styles/SubTitle';
 
+import SubTitle from '../../styles/SubTitle';
 import { Container } from './styles';
 
 const Help: React.FC = () => {

@@ -3,10 +3,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import P5 from 'p5';
 
 import Layout from '../../components/Layout';
+
 import { useConfig } from '../../hooks/config';
-import SubTitle from '../../styles/SubTitle';
+
 import { createSketch } from './sketch';
 
+import SubTitle from '../../styles/SubTitle';
 import { Container, NextPiece, GameOver } from './styles';
 
 const Game: React.FC = () => {

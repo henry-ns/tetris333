@@ -2,7 +2,9 @@
 import P5 from 'p5';
 
 import { ConfigData } from '../../hooks/config';
+
 import { BOARD, BLOCK_SIZE, MODELS } from '../../utils/constants';
+
 import Piece from './entities/Piece';
 
 export type Sketch = (p: P5) => void;
