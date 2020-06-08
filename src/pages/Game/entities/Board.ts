@@ -1,5 +1,4 @@
 import P5 from 'p5';
-import { opacify } from 'polished';
 
 import { ConfigData } from '../../../hooks/config';
 
@@ -46,6 +45,7 @@ class Board {
 
     this.currentPiece = this.createPiace();
     this.phantomPiece = this.createPhantomPiece();
+
     this.initPieceStack();
 
     this.getNextPiece();
@@ -80,18 +80,14 @@ class Board {
     return new Piece(this.canvas, this.canvas.random(MODELS));
   }
 
-  // TODO: to refactor
   private createPhantomPiece(): Piece {
-    const phantomPiece = this.currentPiece.createPhantomCopy();
+    const piece = this.currentPiece.createPhantomCopy();
 
-    while (
-      !this.checkCollision(phantomPiece) &&
-      !phantomPiece.checkBottomEdge()
-    ) {
-      phantomPiece.gravity();
+    while (!this.checkCollision(piece) && !piece.checkBottomEdge()) {
+      piece.gravity();
     }
 
-    return phantomPiece;
+    return piece;
   }
 
   private getNextPiece(): void {
@@ -318,9 +314,8 @@ class Board {
 
     if (moviment) {
       moviment();
+      this.phantomPiece = this.createPhantomPiece();
     }
-
-    this.phantomPiece = this.createPhantomPiece();
 
     return !!moviment;
   }
@@ -329,9 +324,9 @@ class Board {
   checkEndGame(): boolean {
     const [line] = this.matrix;
 
-    const findBlock = !!line.find((block) => block);
+    const findBlock = line.find((block) => block);
 
-    return findBlock;
+    return !!findBlock;
   }
 }
 
