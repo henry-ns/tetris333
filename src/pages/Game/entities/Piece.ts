@@ -1,4 +1,5 @@
 import P5 from 'p5';
+import { opacify } from 'polished';
 
 import { KEYS, BLOCK_SIZE } from '../../../utils/constants';
 
@@ -24,8 +25,6 @@ interface CreatePiace {
 class Piece {
   color: string;
 
-  shape: Shape;
-
   width: number;
 
   height: number;
@@ -41,10 +40,9 @@ class Piece {
     { blocks, shape, color, width, height }: CreatePiace,
   ) {
     const x = this.canvas.width / 2 - BLOCK_SIZE;
-    const y = /*  -2 or -this.canvas.height *  */ BLOCK_SIZE;
+    const y = -height * BLOCK_SIZE;
 
     this.color = color;
-    this.shape = shape;
 
     this.width = width;
     this.height = height;
@@ -71,15 +69,29 @@ class Piece {
         if (item) {
           const pos = this.canvas.createVector(xIndex, yIndex);
 
-          blocks.push({
-            color: this.color,
-            pos,
-          });
+          blocks.push({ color: this.color, pos });
         }
       });
     });
 
     return blocks;
+  }
+
+  createPhantomCopy(): Piece {
+    const color = opacify(-0.7, this.color);
+    const blocks = this.blocks.map(({ pos }) => ({ color, pos }));
+
+    const piece = new Piece(this.canvas, {
+      color,
+      blocks,
+      shape: [[]],
+      height: this.height,
+      width: this.width,
+    });
+
+    piece.pos.set(this.pos);
+
+    return piece;
   }
 
   checkSideEdges(direction: number): boolean {
@@ -106,15 +118,11 @@ class Piece {
   rotateClockwise(): void {
     [this.height] = [this.width, (this.width = this.height)];
 
-    // this.blocks.forEach((block) => console.log(block.pos));
-
     this.blocks.forEach((block) => {
       const x = block.pos.y;
       const y = this.height - 1 - block.pos.x;
 
       block.pos.set(x, y);
-
-      // block.pos.rotate(Math.PI / 2);
     });
   }
 
@@ -126,8 +134,6 @@ class Piece {
       const y = block.pos.x;
 
       block.pos.set(x, y);
-
-      // block.pos.rotate((3 * Math.PI) / 2);
     });
   }
 
@@ -141,12 +147,6 @@ class Piece {
     }
 
     this.pos.x += direction * BLOCK_SIZE;
-  }
-
-  dropTo(yPosition: number): void {
-    const y = (yPosition - this.height) * BLOCK_SIZE;
-
-    this.pos.y = y;
   }
 
   gravity(): void {
@@ -169,8 +169,7 @@ class Piece {
   }
 
   showBlock(block: Block): void {
-    const blockPos = P5.Vector.mult(block.pos, BLOCK_SIZE);
-    const { x, y } = P5.Vector.add(this.pos, blockPos);
+    const { x, y } = P5.Vector.mult(block.pos, BLOCK_SIZE).add(this.pos);
 
     this.canvas.fill(block.color);
     this.canvas.rect(x, y, BLOCK_SIZE, BLOCK_SIZE);

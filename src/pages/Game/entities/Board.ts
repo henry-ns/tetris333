@@ -82,24 +82,7 @@ class Board {
 
   // TODO: to refactor
   private createPhantomPiece(): Piece {
-    const { shape, height, width, pos } = this.currentPiece;
-
-    const color = opacify(-0.7, this.currentPiece.color);
-
-    const blocks = this.currentPiece.blocks.map((block) => ({
-      pos: block.pos,
-      color,
-    }));
-
-    const phantomPiece = new Piece(this.canvas, {
-      blocks,
-      height,
-      width,
-      color,
-      shape,
-    });
-
-    phantomPiece.pos.x = pos.x;
+    const phantomPiece = this.currentPiece.createPhantomCopy();
 
     while (
       !this.checkCollision(phantomPiece) &&
@@ -125,9 +108,6 @@ class Board {
 
   private addCurrentPiece(): void {
     this.currentPiece.blocks.forEach((block) => {
-      // const blockIndex = P5.Vector.div(this.currentPiece.pos, BLOCK_SIZE);
-      // const { x, y } = blockIndex.add(block.pos);
-
       const pos = P5.Vector.mult(block.pos, BLOCK_SIZE);
       pos.add(this.currentPiece.pos);
 
@@ -211,8 +191,8 @@ class Board {
     let isCollide = false;
 
     piece.blocks.forEach((block) => {
-      const x = this.currentPiece.pos.x / BLOCK_SIZE + block.pos.x;
-      const y = this.currentPiece.pos.y / BLOCK_SIZE + block.pos.y + 1;
+      const x = piece.pos.x / BLOCK_SIZE + block.pos.x;
+      const y = piece.pos.y / BLOCK_SIZE + block.pos.y + 1;
 
       if (this.matrix[y] && this.matrix[y][x]) {
         isCollide = true;
