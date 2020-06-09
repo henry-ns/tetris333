@@ -83,7 +83,10 @@ class Board {
   private createPhantomPiece(): Piece {
     const piece = this.currentPiece.createPhantomCopy();
 
-    while (!this.checkCollision(piece) && !piece.checkBottomEdge()) {
+    while (
+      !this.checkPieceCollision('bottom', piece) &&
+      !piece.checkBottomEdge()
+    ) {
       piece.gravity();
     }
 
@@ -147,7 +150,9 @@ class Board {
   }
 
   private moveHorizontally(direction = 1): void {
-    if (this.checkSideCollision(direction)) {
+    const side = direction === 1 ? 'right' : 'left';
+
+    if (this.checkPieceCollision(side)) {
       return;
     }
 
@@ -183,29 +188,24 @@ class Board {
     }
   }
 
-  private checkCollision(piece = this.currentPiece): boolean {
+  private checkPieceCollision(
+    side: 'bottom' | 'left' | 'right',
+    piece = this.currentPiece,
+  ): boolean {
+    const directions = {
+      left: [-1, 0],
+      right: [1, 0],
+      bottom: [0, 1],
+    };
+
     let isCollide = false;
 
     piece.blocks.forEach((block) => {
-      const x = piece.pos.x / BLOCK_SIZE + block.pos.x;
-      const y = piece.pos.y / BLOCK_SIZE + block.pos.y + 1;
+      const [x, y] = directions[side];
 
-      if (this.matrix[y] && this.matrix[y][x]) {
-        isCollide = true;
-      }
-    });
+      const pos = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos).add(x, y);
 
-    return isCollide;
-  }
-
-  private checkSideCollision(direction = 1): boolean {
-    let isCollide = false;
-
-    this.currentPiece.blocks.forEach((block) => {
-      const x = block.pos.x / BLOCK_SIZE + direction;
-      const y = block.pos.y / BLOCK_SIZE;
-
-      if (this.matrix[y] && this.matrix[y][x]) {
+      if (this.matrix[pos.y] && this.matrix[pos.y][pos.x]) {
         isCollide = true;
       }
     });
@@ -295,7 +295,7 @@ class Board {
     this.currentPiece.gravity();
 
     if (
-      this.checkCollision() ||
+      this.checkPieceCollision('bottom') ||
       this.currentPiece.checkBottomEdge() ||
       this.checkEndGame()
     ) {
