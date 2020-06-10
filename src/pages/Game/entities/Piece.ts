@@ -1,123 +1,140 @@
 import P5 from 'p5';
+import { opacify } from 'polished';
 
 import { KEYS, BLOCK_SIZE } from '../../../utils/constants';
-import Block from './Block';
 
-interface CreatePiace {
-  shape: number[][];
+type Shape = number[][];
+
+export interface Block {
+  pos: P5.Vector;
   color: string;
-  width: number;
-  height: number;
 }
 
-interface Moviments {
+export interface Moviments {
   [key: number]: () => void;
 }
 
-type LineOfBlocks = (Block | null)[];
-type Blocks = LineOfBlocks[];
-
-interface ForBlockCbData {
-  block: Block | null;
-  line: LineOfBlocks;
-  index: number;
-  lineIndex: number;
+interface CreatePiace {
+  blocks?: Block[];
+  shape: Shape;
+  color: string;
+  width: number;
+  height: number;
 }
 
 class Piece {
   color: string;
 
-  shape: number[][];
-
-  blocks: Blocks;
-
-  moviments: Moviments;
-
-  x: number;
-
-  y: number;
-
   width: number;
 
   height: number;
 
+  blocks: Block[];
+
+  pos: P5.Vector;
+
+  moviments: Moviments;
+
   constructor(
     private canvas: P5,
-    { shape, color, width, height }: CreatePiace,
+    { blocks, shape, color, width, height }: CreatePiace,
   ) {
-    this.x = this.canvas.width / 2 - BLOCK_SIZE;
-    this.y = -2 * BLOCK_SIZE;
+    const x = this.canvas.width / 2 - BLOCK_SIZE;
+    const y = -height * BLOCK_SIZE;
+
+    this.color = color;
 
     this.width = width;
     this.height = height;
 
-    this.color = color || this.randomColor();
-    this.blocks = this.initBlocks(shape);
-    this.shape = shape;
+    this.pos = this.canvas.createVector(x, y);
+    this.blocks = blocks || this.initBlocks(shape);
 
     this.moviments = {
-      [canvas.LEFT_ARROW]: () => {
-        this.moveHorizontally(-1);
-      },
-      [canvas.RIGHT_ARROW]: () => {
-        this.moveHorizontally();
-      },
-      [canvas.UP_ARROW]: () => {
-        this.rotateClockwise();
-      },
-      [KEYS.A]: () => {
-        this.rotateClockwise();
-      },
-      [KEYS.S]: () => {
-        this.rotateAntiClockwise();
-      },
+      [this.canvas.LEFT_ARROW]: () => this.moveHorizontally(-1),
+      [this.canvas.RIGHT_ARROW]: () => this.moveHorizontally(),
+      [this.canvas.UP_ARROW]: () => this.rotateClockwise(),
+      [this.canvas.DOWN_ARROW]: () => this.gravity(),
+
+      [KEYS.A]: () => this.rotateClockwise(),
+      [KEYS.S]: () => this.rotateAntiClockwise(),
     };
   }
 
-  private randomColor(): string {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  }
+  private initBlocks(shape: Shape): Block[] {
+    const blocks: Block[] = [];
 
-  // TODO: Refactor: use map function
-  private initBlocks(model: number[][]): Blocks {
-    const blocks: Blocks = [];
-
-    model.forEach((line, yIndex) => {
-      const blockLine: LineOfBlocks = [];
-
+    shape.forEach((line, yIndex) => {
       line.forEach((item, xIndex) => {
-        const block = item
-          ? new Block({
-              x: this.x + xIndex * BLOCK_SIZE,
-              y: this.y + yIndex * BLOCK_SIZE,
-              color: this.color,
-            })
-          : null;
+        if (item) {
+          const pos = this.canvas.createVector(xIndex, yIndex);
 
-        blockLine.push(block);
+          blocks.push({ color: this.color, pos });
+        }
       });
-
-      blocks.push(blockLine);
     });
 
     return blocks;
   }
 
-  updateBlocksPosition(): void {
-    this.forBlock(({ block, index, lineIndex }) => {
-      const newX = this.x + index * BLOCK_SIZE;
-      const newY = this.y + lineIndex * BLOCK_SIZE;
+  createPhantomCopy(): Piece {
+    const color = opacify(-0.7, this.color);
+    const blocks = this.blocks.map(({ pos }) => ({ color, pos }));
 
-      block?.setPosition(newX, newY);
+    const piece = new Piece(this.canvas, {
+      color,
+      blocks,
+      shape: [[]],
+      height: this.height,
+      width: this.width,
+    });
+
+    piece.pos.set(this.pos);
+
+    return piece;
+  }
+
+  checkSideEdges(direction: number): boolean {
+    const leftEdge = direction === -1 && this.pos.x === 0;
+
+    const rightEdge =
+      direction === 1 &&
+      this.pos.x + this.width * BLOCK_SIZE === this.canvas.width;
+
+    return leftEdge || rightEdge;
+  }
+
+  // TODO: For refactor later
+  checkPieceInBoard(): void {
+    while (this.pos.x + this.width * BLOCK_SIZE > this.canvas.width) {
+      this.moveHorizontally(-1);
+    }
+  }
+
+  checkBottomEdge(): boolean {
+    return this.pos.y + this.height * BLOCK_SIZE === this.canvas.height;
+  }
+
+  rotateClockwise(): void {
+    [this.height] = [this.width, (this.width = this.height)];
+
+    this.blocks.forEach((block) => {
+      const x = block.pos.y;
+      const y = this.height - 1 - block.pos.x;
+
+      block.pos.set(x, y);
     });
   }
 
-  forBlock(callback: (data: ForBlockCbData) => void, onlyNotNull = true): void {
-    this.blocks.forEach((line, lineIndex) =>
-      line.forEach((block, index) => {
-        (!onlyNotNull || block) && callback({ block, index, line, lineIndex });
-      }),
-    );
+  rotateAntiClockwise(): void {
+    [this.width] = [this.height, (this.height = this.width)];
+
+    this.blocks.forEach((block) => {
+      const x = this.width - 1 - block.pos.y;
+      const y = block.pos.x;
+
+      block.pos.set(x, y);
+    });
   }
 
   /**
@@ -129,90 +146,33 @@ class Piece {
       return;
     }
 
-    this.x += direction * BLOCK_SIZE;
-
-    this.forBlock(({ block }) => {
-      block?.moveHorizontally(direction);
-    });
-  }
-
-  dropTo(yPosition: number): void {
-    const y = (yPosition - this.height) * BLOCK_SIZE;
-
-    this.y = y;
-    this.updateBlocksPosition();
+    this.pos.x += direction * BLOCK_SIZE;
   }
 
   gravity(): void {
-    this.y += BLOCK_SIZE;
-    this.forBlock(({ block }) => block?.gravity());
-  }
-
-  // TODO: For refactor later
-  rotateClockwise(): void {
-    [this.height] = [this.width, (this.width = this.height)];
-
-    const { length } = this.blocks[0];
-    const newMatrix: Blocks = Array.from({ length }).map(() => []);
-
-    this.forBlock(({ block, index }) => newMatrix[index].unshift(block), false);
-
-    this.blocks = newMatrix;
-    this.updateBlocksPosition();
-
-    const newShape: number[][] = Array.from({
-      length: this.shape[0].length,
-    }).map(() => []);
-
-    this.shape.forEach((line) => {
-      line.forEach((block, index) => {
-        newShape[index].unshift(block);
-      });
-    });
-
-    this.shape = newShape;
-
-    this.checkPieceInBoard();
-  }
-
-  // TODO: For refactor later
-  rotateAntiClockwise(): void {
-    for (let i = 0; i < 3; i += 1) {
-      this.rotateClockwise();
-    }
-  }
-
-  checkSideEdges(direction: number): boolean {
-    const leftEdge = direction === -1 && this.x === 0;
-
-    const rightEdge =
-      direction === 1 && this.x + this.width * BLOCK_SIZE === this.canvas.width;
-
-    return leftEdge || rightEdge;
-  }
-
-  // TODO: For refactor later
-  checkPieceInBoard(): void {
-    while (this.x + this.width * BLOCK_SIZE > this.canvas.width) {
-      this.moveHorizontally(-1);
-    }
-  }
-
-  checkBottomEdge(): boolean {
-    return this.y + this.height * BLOCK_SIZE === this.canvas.height;
+    this.pos.y += BLOCK_SIZE;
   }
 
   show(): void {
-    this.forBlock(({ block }) => block?.show(this.canvas));
+    this.blocks.forEach((block) => this.showBlock(block));
 
-    // this.canvas.circle(this.x, this.y, 10);
-    // this.canvas.circle(this.x + this.width * BLOCK_SIZE, this.y, 10);
-    // this.canvas.circle(this.x, this.y + this.height * BLOCK_SIZE, 10);
-    // this.canvas.circle(
-    //   this.x + this.width * BLOCK_SIZE,
-    //   this.y + this.height * BLOCK_SIZE,
-    //   10,
-    // );
+    const { x, y } = this.pos;
+
+    this.canvas.circle(x, y, 10);
+    this.canvas.circle(x + this.width * BLOCK_SIZE, y, 10);
+    this.canvas.circle(x, y + this.height * BLOCK_SIZE, 10);
+    this.canvas.circle(
+      x + this.width * BLOCK_SIZE,
+      y + this.height * BLOCK_SIZE,
+      10,
+    );
+  }
+
+  showBlock(block: Block): void {
+    const { x, y } = P5.Vector.mult(block.pos, BLOCK_SIZE).add(this.pos);
+
+    this.canvas.fill(block.color);
+    this.canvas.rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
   }
 }
 

@@ -3,6 +3,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
 
 import Layout from '../../components/Layout';
+
 import { useConfig } from '../../hooks/config';
 
 import { Container, SubmitButton } from './styles';

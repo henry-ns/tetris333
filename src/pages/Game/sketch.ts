@@ -3,10 +3,13 @@ import P5 from 'p5';
 import { opacify } from 'polished';
 
 import { ConfigData } from '../../hooks/config';
-import theme from '../../styles/themes';
+
 import { BOARD, BLOCK_SIZE, KEYS, TIME_INTERVAL } from '../../utils/constants';
 import sounds from '../../utils/sounds';
+
 import Board from './entities/Board';
+
+import theme from '../../styles/themes';
 
 export type Sketch = (p: P5) => void;
 
@@ -61,6 +64,7 @@ function createSketch(config: ConfigData): Sketch {
 
     p.draw = () => {
       board.show();
+
       if (board.checkEndGame()) {
         const gameOverText = document.getElementById('gameOverText');
 

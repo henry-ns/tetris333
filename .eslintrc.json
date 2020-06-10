@@ -72,12 +72,13 @@
         "groups": [
           "/^(react|styled-components)/",
           "module",
-          "/^./components/",
-          "/^./hooks/",
-          "/^./pages/",
+          "/^.*components/",
+          "/^.*hooks/",
+          "/^.*pages/",
+          "/^.*utils/",
           ["parent", "sibling", "index"],
-          "/^./assets/",
-          "/^./styles/"
+          "/^.*assets/",
+          "/^.*styles/"
         ],
         "alphabetize": { "order": "asc", "ignoreCase": true }
       }
