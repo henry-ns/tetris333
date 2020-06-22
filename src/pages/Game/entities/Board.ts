@@ -83,10 +83,7 @@ class Board {
   private createPhantomPiece(): Piece {
     const piece = this.currentPiece.createPhantomCopy();
 
-    while (
-      !this.checkPieceCollision('bottom', piece) &&
-      !piece.checkBottomEdge()
-    ) {
+    while (!this.checkPieceLimit('bottom', piece) && !piece.checkBottomEdge()) {
       piece.gravity();
     }
 
@@ -152,7 +149,7 @@ class Board {
   private moveHorizontally(direction = 1): void {
     const side = direction === 1 ? 'right' : 'left';
 
-    if (this.checkPieceCollision(side)) {
+    if (this.checkPieceLimit(side)) {
       return;
     }
 
@@ -188,7 +185,7 @@ class Board {
     }
   }
 
-  private checkPieceCollision(
+  private checkPieceLimit(
     side: 'bottom' | 'left' | 'right',
     piece = this.currentPiece,
   ): boolean {
@@ -311,7 +308,7 @@ class Board {
 
     if (
       this.isPieceCollided(pieceCopy) ||
-      this.currentPiece.checkBottomEdge() ||
+      this.currentPiece.checkBottomEdge() || // TODO: change this for the current piece can slip
       this.checkEndGame()
     ) {
       this.addCurrentPiece();
