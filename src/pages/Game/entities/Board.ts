@@ -213,20 +213,30 @@ class Board {
     return isCollide;
   }
 
-  private drawBackground(): void {
-    let [x, y] = [0, 0];
+  private isPieceCollided(piece = this.currentPiece): boolean {
+    let isCollided = false;
 
+    piece.blocks.forEach((block) => {
+      const { x, y } = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos);
+
+      if (this.matrix[y] && this.matrix[y][x]) {
+        isCollided = true;
+      }
+    });
+
+    return isCollided;
+  }
+
+  private drawBackground(): void {
     this.canvas.background(theme.colors.backgroundDark);
 
     if (this.config.gridEnabled) {
-      while (x < this.canvas.width) {
+      for (let x = 0; x < this.canvas.width; x += BLOCK_SIZE) {
         this.canvas.line(x, 0, x, this.canvas.height);
-        x += BLOCK_SIZE;
       }
 
-      while (y < this.canvas.height) {
+      for (let y = 0; y < this.canvas.height; y += BLOCK_SIZE) {
         this.canvas.line(0, y, this.canvas.width, y);
-        y += BLOCK_SIZE;
       }
     }
   }
@@ -292,10 +302,15 @@ class Board {
   }
 
   update(): void {
-    this.currentPiece.gravity();
+    const pieceCopy = this.currentPiece.createPhantomCopy();
+    pieceCopy.gravity();
+
+    if (!this.isPieceCollided(pieceCopy)) {
+      this.currentPiece.gravity();
+    }
 
     if (
-      this.checkPieceCollision('bottom') ||
+      this.isPieceCollided(pieceCopy) ||
       this.currentPiece.checkBottomEdge() ||
       this.checkEndGame()
     ) {
