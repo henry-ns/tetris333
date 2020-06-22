@@ -211,6 +211,10 @@ class Board {
   }
 
   private isPieceCollided(piece = this.currentPiece): boolean {
+    if (piece.pos.y + piece.height * BLOCK_SIZE > this.canvas.height) {
+      return true;
+    }
+
     let isCollided = false;
 
     piece.blocks.forEach((block) => {
@@ -306,11 +310,7 @@ class Board {
       this.currentPiece.gravity();
     }
 
-    if (
-      this.isPieceCollided(pieceCopy) ||
-      this.currentPiece.checkBottomEdge() || // TODO: change this for the current piece can slip
-      this.checkEndGame()
-    ) {
+    if (this.isPieceCollided(pieceCopy) || this.checkEndGame()) {
       this.addCurrentPiece();
       this.getNextPiece();
     }
