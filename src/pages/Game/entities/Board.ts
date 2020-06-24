@@ -107,15 +107,15 @@ class Board {
   }
 
   private addCurrentPiece(): void {
+    if (this.currentPiece.pos.y < 0) {
+      this.isEndGame = true;
+    }
+
     this.currentPiece.blocks.forEach((block) => {
       const pos = P5.Vector.mult(block.pos, BLOCK_SIZE);
       pos.add(this.currentPiece.pos);
 
       const { x, y } = P5.Vector.div(pos, BLOCK_SIZE);
-
-      if (y <= -1) {
-        this.setEndGame(true);
-      }
 
       if (y >= 0) {
         this.matrix[y][x] = {
@@ -157,9 +157,7 @@ class Board {
   private moveHorizontally(direction = 1): void {
     const side = direction === 1 ? 'right' : 'left';
 
-    if (this.checkPieceLimit(side)) {
-      return;
-    }
+    if (this.checkPieceLimit(side)) return;
 
     this.currentPiece.moveHorizontally(direction);
   }
@@ -338,10 +336,6 @@ class Board {
     }
 
     return !!moviment;
-  }
-
-  private setEndGame(endGame: boolean): void {
-    this.isEndGame = endGame;
   }
 
   checkEndGame(): boolean {
