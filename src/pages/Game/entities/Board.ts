@@ -201,19 +201,18 @@ class Board {
       bottom: [0, 1],
     };
 
-    let isCollide = false;
-
-    piece.blocks.forEach((block) => {
+    /**
+     * checks if at least one piece block if is leaning against one board block.
+     */
+    const isOnEdge = !!piece.blocks.find((block) => {
       const [x, y] = directions[side];
 
       const pos = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos).add(x, y);
 
-      if (this.matrix[pos.y] && this.matrix[pos.y][pos.x]) {
-        isCollide = true;
-      }
+      return this.matrix[pos.y] && this.matrix[pos.y][pos.x];
     });
 
-    return isCollide;
+    return isOnEdge;
   }
 
   private isPieceCollided(piece = this.currentPiece): boolean {
