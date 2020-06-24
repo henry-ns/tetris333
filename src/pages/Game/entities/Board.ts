@@ -83,10 +83,7 @@ class Board {
   private createPhantomPiece(): Piece {
     const piece = this.currentPiece.createPhantomCopy();
 
-    while (
-      !this.checkPieceCollision('bottom', piece) &&
-      !piece.checkBottomEdge()
-    ) {
+    while (!this.checkPieceLimit('bottom', piece) && !piece.checkBottomEdge()) {
       piece.gravity();
     }
 
@@ -152,7 +149,7 @@ class Board {
   private moveHorizontally(direction = 1): void {
     const side = direction === 1 ? 'right' : 'left';
 
-    if (this.checkPieceCollision(side)) {
+    if (this.checkPieceLimit(side)) {
       return;
     }
 
@@ -188,7 +185,7 @@ class Board {
     }
   }
 
-  private checkPieceCollision(
+  private checkPieceLimit(
     side: 'bottom' | 'left' | 'right',
     piece = this.currentPiece,
   ): boolean {
@@ -213,20 +210,34 @@ class Board {
     return isCollide;
   }
 
-  private drawBackground(): void {
-    let [x, y] = [0, 0];
+  private isPieceCollided(piece = this.currentPiece): boolean {
+    if (piece.pos.y + piece.height * BLOCK_SIZE > this.canvas.height) {
+      return true;
+    }
 
+    let isCollided = false;
+
+    piece.blocks.forEach((block) => {
+      const { x, y } = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos);
+
+      if (this.matrix[y] && this.matrix[y][x]) {
+        isCollided = true;
+      }
+    });
+
+    return isCollided;
+  }
+
+  private drawBackground(): void {
     this.canvas.background(theme.colors.backgroundDark);
 
     if (this.config.gridEnabled) {
-      while (x < this.canvas.width) {
+      for (let x = 0; x < this.canvas.width; x += BLOCK_SIZE) {
         this.canvas.line(x, 0, x, this.canvas.height);
-        x += BLOCK_SIZE;
       }
 
-      while (y < this.canvas.height) {
+      for (let y = 0; y < this.canvas.height; y += BLOCK_SIZE) {
         this.canvas.line(0, y, this.canvas.width, y);
-        y += BLOCK_SIZE;
       }
     }
   }
@@ -292,13 +303,14 @@ class Board {
   }
 
   update(): void {
-    this.currentPiece.gravity();
+    const pieceCopy = this.currentPiece.createPhantomCopy();
+    pieceCopy.gravity();
 
-    if (
-      this.checkPieceCollision('bottom') ||
-      this.currentPiece.checkBottomEdge() ||
-      this.checkEndGame()
-    ) {
+    if (!this.isPieceCollided(pieceCopy)) {
+      this.currentPiece.gravity();
+    }
+
+    if (this.isPieceCollided(pieceCopy) || this.checkEndGame()) {
       this.addCurrentPiece();
       this.getNextPiece();
     }
