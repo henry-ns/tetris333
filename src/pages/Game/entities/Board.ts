@@ -27,6 +27,8 @@ class Board {
 
   private phantomPiece: Piece;
 
+  private isEndGame: boolean;
+
   currentPiece: Piece;
 
   nextPiece?: Piece;
@@ -40,6 +42,8 @@ class Board {
     private config: Omit<ConfigData, 'difficulty'>,
     private sizes: Sizes,
   ) {
+    this.isEndGame = false;
+
     this.pieceStack = [];
     this.matrix = this.initMatrix();
 
@@ -108,6 +112,10 @@ class Board {
       pos.add(this.currentPiece.pos);
 
       const { x, y } = P5.Vector.div(pos, BLOCK_SIZE);
+
+      if (y <= -1) {
+        this.setEndGame(true);
+      }
 
       if (y >= 0) {
         this.matrix[y][x] = {
@@ -332,13 +340,12 @@ class Board {
     return !!moviment;
   }
 
-  // TODO: to refactor later. this method is wrong!!!!
+  private setEndGame(endGame: boolean): void {
+    this.isEndGame = endGame;
+  }
+
   checkEndGame(): boolean {
-    const [line] = this.matrix;
-
-    const findBlock = line.find((block) => block);
-
-    return !!findBlock;
+    return this.isEndGame;
   }
 }
 
