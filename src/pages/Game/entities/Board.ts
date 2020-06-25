@@ -107,15 +107,15 @@ class Board {
   }
 
   private addCurrentPiece(): void {
+    if (this.currentPiece.pos.y < 0) {
+      this.isEndGame = true;
+    }
+
     this.currentPiece.blocks.forEach((block) => {
       const pos = P5.Vector.mult(block.pos, BLOCK_SIZE);
       pos.add(this.currentPiece.pos);
 
       const { x, y } = P5.Vector.div(pos, BLOCK_SIZE);
-
-      if (y <= -1) {
-        this.setEndGame(true);
-      }
 
       if (y >= 0) {
         this.matrix[y][x] = {
@@ -157,9 +157,7 @@ class Board {
   private moveHorizontally(direction = 1): void {
     const side = direction === 1 ? 'right' : 'left';
 
-    if (this.checkPieceLimit(side)) {
-      return;
-    }
+    if (this.checkPieceLimit(side)) return;
 
     this.currentPiece.moveHorizontally(direction);
   }
@@ -203,19 +201,18 @@ class Board {
       bottom: [0, 1],
     };
 
-    let isCollide = false;
-
-    piece.blocks.forEach((block) => {
+    /**
+     * checks if at least one piece block if is leaning against one board block.
+     */
+    const isOnEdge = !!piece.blocks.find((block) => {
       const [x, y] = directions[side];
 
       const pos = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos).add(x, y);
 
-      if (this.matrix[pos.y] && this.matrix[pos.y][pos.x]) {
-        isCollide = true;
-      }
+      return this.matrix[pos.y] && this.matrix[pos.y][pos.x];
     });
 
-    return isCollide;
+    return isOnEdge;
   }
 
   private isPieceCollided(piece = this.currentPiece): boolean {
@@ -338,10 +335,6 @@ class Board {
     }
 
     return !!moviment;
-  }
-
-  private setEndGame(endGame: boolean): void {
-    this.isEndGame = endGame;
   }
 
   checkEndGame(): boolean {
