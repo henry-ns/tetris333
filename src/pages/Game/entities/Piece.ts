@@ -1,7 +1,7 @@
 import P5 from 'p5';
 import { opacify } from 'polished';
 
-import { KEYS, BLOCK_SIZE } from '../../../utils/constants';
+import { KEYS, BLOCK_SIZE, BOARD } from '../../../utils/constants';
 
 type Shape = number[][];
 
@@ -104,11 +104,12 @@ class Piece {
     return leftEdge || rightEdge;
   }
 
-  // TODO: For refactor later
   checkPieceInBoard(): void {
-    while (this.pos.x + this.width * BLOCK_SIZE > this.canvas.width) {
-      this.moveHorizontally(-1);
-    }
+    const offLimitSize = BOARD.X - this.pos.x / BLOCK_SIZE - this.width;
+
+    if (offLimitSize > 0) return;
+
+    this.moveHorizontally(offLimitSize);
   }
 
   checkBottomEdge(): boolean {
@@ -124,6 +125,8 @@ class Piece {
 
       block.pos.set(x, y);
     });
+
+    this.checkPieceInBoard();
   }
 
   rotateAntiClockwise(): void {
@@ -135,6 +138,8 @@ class Piece {
 
       block.pos.set(x, y);
     });
+
+    this.checkPieceInBoard();
   }
 
   /**
