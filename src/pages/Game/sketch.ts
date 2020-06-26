@@ -17,7 +17,7 @@ function createSketch(config: ConfigData): Sketch {
   function sketch(p: P5): void {
     let board: Board;
 
-    let lastKeyPressed: number;
+    // let lastKeyPressed: number;
 
     let isPaused = false;
 
@@ -48,8 +48,9 @@ function createSketch(config: ConfigData): Sketch {
       isPaused = !isPaused;
     }
 
-    p.setup = () => {
-      p.createCanvas(BOARD.X * BLOCK_SIZE, BOARD.Y * BLOCK_SIZE);
+    function restart(): void {
+      const gameOverElement = document.getElementById('game-over');
+      gameOverElement?.classList.remove('display');
       // points = 0;
 
       const sizes = {
@@ -60,22 +61,24 @@ function createSketch(config: ConfigData): Sketch {
       board = new Board(p, config, sizes);
 
       play();
+    }
+
+    p.setup = () => {
+      p.createCanvas(BOARD.X * BLOCK_SIZE, BOARD.Y * BLOCK_SIZE);
+      restart();
     };
 
     p.draw = () => {
       board.show();
 
       if (board.checkEndGame()) {
-        const gameOverText = document.getElementById('gameOverText');
-
-        if (gameOverText) {
-          gameOverText.classList.add('display');
-        }
+        const gameOverElement = document.getElementById('game-over');
+        gameOverElement?.classList.add('display');
 
         p.fill(opacify(-0.2, theme.colors.backgroundDark));
         p.rect(0, 0, p.width, p.height);
 
-        togglePlayed();
+        pause();
 
         sounds.endGame.play();
       }
@@ -93,13 +96,14 @@ function createSketch(config: ConfigData): Sketch {
       }
 
       if (!isPaused) {
-        const moviments = [p.LEFT_ARROW, p.RIGHT_ARROW, p.DOWN_ARROW];
+        board.movePiece(p.keyCode);
+        // const moviments = [p.LEFT_ARROW, p.RIGHT_ARROW, p.DOWN_ARROW];
 
-        const moved = board.movePiece(p.keyCode);
+        // const moved = board.movePiece(p.keyCode);
 
-        if (moved && moviments.includes(p.keyCode)) {
-          lastKeyPressed = p.keyCode;
-        }
+        // if (moved && moviments.includes(p.keyCode)) {
+        //   lastKeyPressed = p.keyCode;
+        // }
       }
     };
   }

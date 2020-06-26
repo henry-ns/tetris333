@@ -37,6 +37,8 @@ class Board {
 
   points: number;
 
+  countPlays: number;
+
   constructor(
     private canvas: P5,
     private config: Omit<ConfigData, 'difficulty'>,
@@ -51,11 +53,11 @@ class Board {
     this.phantomPiece = this.createPhantomPiece();
 
     this.initPieceStack();
-
     this.getNextPiece();
 
     this.level = 1;
     this.points = 0;
+    this.countPlays = 0;
 
     this.displayPoints();
 

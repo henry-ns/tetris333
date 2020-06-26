@@ -14,7 +14,7 @@ import { Container, NextPiece, GameOver } from './styles';
 const Game: React.FC = () => {
   const { config } = useConfig();
 
-  const [game, setGame] = useState<P5>();
+  const [, setGame] = useState<P5>();
   const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,19 +25,13 @@ const Game: React.FC = () => {
     }
   }, [config]);
 
-  function resetGame(): void {
-    game?.setup();
-  }
-
   return (
     <Layout>
       <Container>
         <section ref={boardRef}>
-          <GameOver id="gameOverText">
+          <GameOver id="game-over">
             <span>Game Over</span>
-            <button type="button" onClick={resetGame}>
-              play again
-            </button>
+            <button type="button">play again</button>
           </GameOver>
         </section>
 

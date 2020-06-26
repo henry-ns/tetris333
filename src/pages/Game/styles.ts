@@ -65,7 +65,8 @@ export const GameOver = styled.div`
   justify-content: center;
   flex-direction: column;
 
-  /* opacity: 0; */
+  opacity: 0;
+  pointer-events: none;
 
   position: absolute;
   user-select: none;
