@@ -29,14 +29,17 @@ const Game: React.FC = () => {
     <Layout>
       <Container>
         <section ref={boardRef}>
-          <GameOver id="gameOverText">Game Over</GameOver>
+          <GameOver id="game-over">
+            <span>Game Over</span>
+            <button type="button">play again</button>
+          </GameOver>
         </section>
 
         <section>
           <NextPiece>
             <SubTitle>Próxima peça</SubTitle>
             <div>
-              <img src="" alt="" id="nextPiece" />
+              <img alt="next piece" id="nextPiece" />
             </div>
           </NextPiece>
           {/* <div>

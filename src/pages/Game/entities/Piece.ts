@@ -161,16 +161,16 @@ class Piece {
   show(): void {
     this.blocks.forEach((block) => this.showBlock(block));
 
-    const { x, y } = this.pos;
+    // const { x, y } = this.pos;
 
-    this.canvas.circle(x, y, 10);
-    this.canvas.circle(x + this.width * BLOCK_SIZE, y, 10);
-    this.canvas.circle(x, y + this.height * BLOCK_SIZE, 10);
-    this.canvas.circle(
-      x + this.width * BLOCK_SIZE,
-      y + this.height * BLOCK_SIZE,
-      10,
-    );
+    // this.canvas.circle(x, y, 10);
+    // this.canvas.circle(x + this.width * BLOCK_SIZE, y, 10);
+    // this.canvas.circle(x, y + this.height * BLOCK_SIZE, 10);
+    // this.canvas.circle(
+    //   x + this.width * BLOCK_SIZE,
+    //   y + this.height * BLOCK_SIZE,
+    //   10,
+    // );
   }
 
   showBlock(block: Block): void {

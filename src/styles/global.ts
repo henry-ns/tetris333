@@ -79,6 +79,5 @@ export default createGlobalStyle`
   .display{
     opacity:1;
     pointer-events: all;
-
   }
 `;
