@@ -65,7 +65,11 @@ function createSketch(config: ConfigData): Sketch {
 
     p.setup = () => {
       p.createCanvas(BOARD.X * BLOCK_SIZE, BOARD.Y * BLOCK_SIZE);
+
       restart();
+
+      const gameOverBtn = document.querySelector('#game-over button');
+      gameOverBtn?.addEventListener('click', restart);
     };
 
     p.draw = () => {
