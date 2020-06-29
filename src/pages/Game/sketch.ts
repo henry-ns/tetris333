@@ -5,16 +5,20 @@ import { opacify } from 'polished';
 import { ConfigData } from '../../hooks/config';
 
 import { BOARD, BLOCK_SIZE, KEYS, TIME_INTERVAL } from '../../utils/constants';
-import sounds from '../../utils/sounds';
 
 import Board from './entities/Board';
 
 import theme from '../../styles/themes';
 
-export type Sketch = (p: P5) => void;
+export interface GameSketch extends P5 {
+  restart: () => void;
+  pause: () => void;
+}
+
+export type Sketch = (p: GameSketch) => void;
 
 function createSketch(config: ConfigData): Sketch {
-  function sketch(p: P5): void {
+  function sketch(p: GameSketch): void {
     let board: Board;
 
     // let lastKeyPressed: number;
@@ -83,8 +87,6 @@ function createSketch(config: ConfigData): Sketch {
         p.rect(0, 0, p.width, p.height);
 
         pause();
-
-        sounds.endGame.play();
       }
     };
 
@@ -110,6 +112,9 @@ function createSketch(config: ConfigData): Sketch {
         // }
       }
     };
+
+    p.restart = restart;
+    p.pause = pause;
   }
 
   return sketch;

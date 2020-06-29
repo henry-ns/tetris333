@@ -12,6 +12,7 @@ const Configuration: React.FC = () => {
   const {
     config,
     toggleGrid,
+    toggleMusicOn,
     togglePhantomPiece,
     increseDifficulty,
     decreseDifficulty,
@@ -69,6 +70,17 @@ const Configuration: React.FC = () => {
               id="grid"
               checked={config.gridEnabled}
               onChange={toggleGrid}
+            />
+            <span />
+          </label>
+
+          <label htmlFor="music-on">
+            Music
+            <input
+              type="checkbox"
+              id="music-on"
+              checked={config.music.on}
+              onChange={toggleMusicOn}
             />
             <span />
           </label>

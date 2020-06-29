@@ -6,7 +6,7 @@ import Layout from '../../components/Layout';
 
 import { useConfig } from '../../hooks/config';
 
-import { createSketch } from './sketch';
+import { createSketch, GameSketch } from './sketch';
 
 import SubTitle from '../../styles/SubTitle';
 import { Container, NextPiece, GameOver } from './styles';
@@ -14,16 +14,20 @@ import { Container, NextPiece, GameOver } from './styles';
 const Game: React.FC = () => {
   const { config } = useConfig();
 
-  const [, setGame] = useState<P5>();
+  const [game, setGame] = useState<GameSketch | undefined>(undefined);
   const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (boardRef.current) {
+    if (boardRef.current && !game) {
       const sketch = createSketch(config);
 
-      setGame(new P5(sketch, boardRef.current));
+      setGame(new P5(sketch, boardRef.current) as GameSketch);
     }
-  }, [config]);
+
+    game?.restart();
+
+    return () => game?.pause();
+  }, [config, game]);
 
   return (
     <Layout>
