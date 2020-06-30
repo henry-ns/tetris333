@@ -27,6 +27,8 @@ class Board {
 
   private phantomPiece: Piece;
 
+  private isEndGame: boolean;
+
   currentPiece: Piece;
 
   nextPiece?: Piece;
@@ -40,6 +42,8 @@ class Board {
     private config: Omit<ConfigData, 'difficulty'>,
     private sizes: Sizes,
   ) {
+    this.isEndGame = false;
+
     this.pieceStack = [];
     this.matrix = this.initMatrix();
 
@@ -47,7 +51,6 @@ class Board {
     this.phantomPiece = this.createPhantomPiece();
 
     this.initPieceStack();
-
     this.getNextPiece();
 
     this.level = 1;
@@ -83,10 +86,7 @@ class Board {
   private createPhantomPiece(): Piece {
     const piece = this.currentPiece.createPhantomCopy();
 
-    while (
-      !this.checkPieceCollision('bottom', piece) &&
-      !piece.checkBottomEdge()
-    ) {
+    while (!this.checkPieceLimit('bottom', piece) && !piece.checkBottomEdge()) {
       piece.gravity();
     }
 
@@ -106,6 +106,10 @@ class Board {
   }
 
   private addCurrentPiece(): void {
+    if (this.currentPiece.pos.y < 0) {
+      this.isEndGame = true;
+    }
+
     this.currentPiece.blocks.forEach((block) => {
       const pos = P5.Vector.mult(block.pos, BLOCK_SIZE);
       pos.add(this.currentPiece.pos);
@@ -152,9 +156,7 @@ class Board {
   private moveHorizontally(direction = 1): void {
     const side = direction === 1 ? 'right' : 'left';
 
-    if (this.checkPieceCollision(side)) {
-      return;
-    }
+    if (this.checkPieceLimit(side)) return;
 
     this.currentPiece.moveHorizontally(direction);
   }
@@ -188,7 +190,7 @@ class Board {
     }
   }
 
-  private checkPieceCollision(
+  private checkPieceLimit(
     side: 'bottom' | 'left' | 'right',
     piece = this.currentPiece,
   ): boolean {
@@ -198,35 +200,48 @@ class Board {
       bottom: [0, 1],
     };
 
-    let isCollide = false;
-
-    piece.blocks.forEach((block) => {
+    /**
+     * checks if at least one piece block if is leaning against one board block.
+     */
+    const isOnEdge = !!piece.blocks.find((block) => {
       const [x, y] = directions[side];
 
       const pos = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos).add(x, y);
 
-      if (this.matrix[pos.y] && this.matrix[pos.y][pos.x]) {
-        isCollide = true;
+      return this.matrix[pos.y] && this.matrix[pos.y][pos.x];
+    });
+
+    return isOnEdge;
+  }
+
+  private isPieceCollided(piece = this.currentPiece): boolean {
+    if (piece.pos.y + piece.height * BLOCK_SIZE > this.canvas.height) {
+      return true;
+    }
+
+    let isCollided = false;
+
+    piece.blocks.forEach((block) => {
+      const { x, y } = P5.Vector.div(piece.pos, BLOCK_SIZE).add(block.pos);
+
+      if (this.matrix[y] && this.matrix[y][x]) {
+        isCollided = true;
       }
     });
 
-    return isCollide;
+    return isCollided;
   }
 
   private drawBackground(): void {
-    let [x, y] = [0, 0];
-
     this.canvas.background(theme.colors.backgroundDark);
 
     if (this.config.gridEnabled) {
-      while (x < this.canvas.width) {
+      for (let x = 0; x < this.canvas.width; x += BLOCK_SIZE) {
         this.canvas.line(x, 0, x, this.canvas.height);
-        x += BLOCK_SIZE;
       }
 
-      while (y < this.canvas.height) {
+      for (let y = 0; y < this.canvas.height; y += BLOCK_SIZE) {
         this.canvas.line(0, y, this.canvas.width, y);
-        y += BLOCK_SIZE;
       }
     }
   }
@@ -292,13 +307,14 @@ class Board {
   }
 
   update(): void {
-    this.currentPiece.gravity();
+    const pieceCopy = this.currentPiece.createPhantomCopy();
+    pieceCopy.gravity();
 
-    if (
-      this.checkPieceCollision('bottom') ||
-      this.currentPiece.checkBottomEdge() ||
-      this.checkEndGame()
-    ) {
+    if (!this.isPieceCollided(pieceCopy)) {
+      this.currentPiece.gravity();
+    }
+
+    if (this.isPieceCollided(pieceCopy) || this.checkEndGame()) {
       this.addCurrentPiece();
       this.getNextPiece();
     }
@@ -320,13 +336,8 @@ class Board {
     return !!moviment;
   }
 
-  // TODO: to refactor later. this method is wrong!!!!
   checkEndGame(): boolean {
-    const [line] = this.matrix;
-
-    const findBlock = line.find((block) => block);
-
-    return !!findBlock;
+    return this.isEndGame;
   }
 }
 

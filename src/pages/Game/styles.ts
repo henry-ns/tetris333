@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { rem } from 'polished';
+import { rem, shade } from 'polished';
 
 import MainContainer from '../../styles/Container';
 
@@ -60,7 +60,13 @@ export const NextPiece = styled.div`
 `;
 
 export const GameOver = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
   opacity: 0;
+  pointer-events: none;
 
   position: absolute;
   user-select: none;
@@ -74,4 +80,28 @@ export const GameOver = styled.div`
   top: 50%;
 
   transform: translate(-50%, -50%);
+
+  button {
+    cursor: pointer;
+    background: ${({ theme }) => theme.colors.active};
+    transition: transform 0.3s, background 0.3s;
+
+    letter-spacing: 0.2rem;
+    font-size: ${rem('24px')};
+    text-transform: uppercase;
+
+    border: 0;
+    border-radius: 2px;
+    padding: 16px;
+    margin-top: 24px;
+
+    &:hover {
+      background: ${({ theme }) => shade(0.2, theme.colors.active)};
+    }
+
+    &:active {
+      background: ${({ theme }) => theme.colors.active};
+      transform: scale(0.95) translateZ(0);
+    }
+  }
 `;
