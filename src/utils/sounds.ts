@@ -16,8 +16,10 @@ function createSounds(config = { volume: 0.3 }): Sounds {
   const endGame = new Uifx(soundEndGame, config);
   const lineComplete = new Uifx(soundLineComplete, config);
   const pieceColision = new Uifx(soundPieceColision, config);
+
+  const pieceMovementVolume = config.volume - 0.2;
   const pieceMovement = new Uifx(soundPieceMovement, {
-    volume: config.volume - 0.2,
+    volume: pieceMovementVolume > 0 ? pieceMovementVolume : config.volume,
   });
 
   return {

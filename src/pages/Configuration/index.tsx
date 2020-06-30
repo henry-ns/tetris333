@@ -1,10 +1,14 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
+
+import Uifx from 'uifx';
 
 import Layout from '../../components/Layout';
 
 import { useConfig } from '../../hooks/config';
+
+import soundPieceMovement from '../../assets/sounds/pieceMovement.wav';
 
 import { Container, SubmitButton } from './styles';
 
@@ -12,7 +16,8 @@ const Configuration: React.FC = () => {
   const {
     config,
     toggleGrid,
-    toggleMusicOn,
+    toggleSoundsOn,
+    setSoundsVolume,
     togglePhantomPiece,
     increseDifficulty,
     decreseDifficulty,
@@ -21,12 +26,26 @@ const Configuration: React.FC = () => {
 
   const history = useHistory();
 
+  const [updateVolumeSound] = useState(
+    new Uifx(soundPieceMovement, { volume: config.sounds.volume }),
+  );
+
   function handleSubmit(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
 
     saveConfig();
 
     history.push('/');
+  }
+
+  function handleVolumeChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void {
+    setSoundsVolume(+event.target.value);
+  }
+
+  function handlePlayVolumeTest(): void {
+    updateVolumeSound.play(config.sounds.volume);
   }
 
   return (
@@ -74,15 +93,29 @@ const Configuration: React.FC = () => {
             <span />
           </label>
 
-          <label htmlFor="music-on">
-            Music
+          <label htmlFor="Sounds-on">
+            Sounds
             <input
               type="checkbox"
-              id="music-on"
-              checked={config.music.on}
-              onChange={toggleMusicOn}
+              id="Sounds-on"
+              checked={config.sounds.on}
+              onChange={toggleSoundsOn}
             />
             <span />
+          </label>
+
+          <label htmlFor="sound-volume">
+            Sound volume
+            <input
+              type="range"
+              min="0"
+              max="100"
+              id="sound-volume"
+              value={config.sounds.volume * 100}
+              checked={config.sounds.on}
+              onChange={handleVolumeChange}
+              onMouseUp={handlePlayVolumeTest}
+            />
           </label>
 
           <SubmitButton>Salvar</SubmitButton>

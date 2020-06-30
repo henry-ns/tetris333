@@ -44,7 +44,7 @@ class Board {
     private config: Omit<Omit<ConfigData, 'difficulty'>, 'formattedDifficulty'>,
     private sizes: Sizes,
   ) {
-    this.sounds = createSounds(config.music);
+    this.sounds = createSounds(config.sounds);
     this.isEndGame = false;
 
     this.pieceStack = [];
@@ -123,7 +123,7 @@ class Board {
       }
     });
 
-    if (this.config.music.on) {
+    if (this.config.sounds.on) {
       this.sounds.pieceColision.play();
     }
 
@@ -132,7 +132,7 @@ class Board {
     if (this.currentPiece.pos.y < 0) {
       this.isEndGame = true;
 
-      if (this.config.music.on) {
+      if (this.config.sounds.on) {
         this.sounds.endGame.play();
       }
     }
@@ -183,7 +183,7 @@ class Board {
     this.addPoints(length - 1);
 
     if (length) {
-      if (this.config.music.on) {
+      if (this.config.sounds.on) {
         this.sounds.lineComplete.play();
       }
 

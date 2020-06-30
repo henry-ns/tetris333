@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
 
-interface MusicConfig {
+interface SoundsConfig {
   volume: number;
   on: boolean;
 }
@@ -10,13 +10,14 @@ export interface ConfigData {
   formattedDifficulty: string;
   gridEnabled: boolean;
   phantomPieceEnabled: boolean;
-  music: MusicConfig;
+  sounds: SoundsConfig;
 }
 
 interface Config {
   config: ConfigData;
+  setSoundsVolume(volume: number): void;
+  toggleSoundsOn(): void;
   togglePhantomPiece(): void;
-  toggleMusicOn(): void;
   toggleGrid(): void;
   increseDifficulty(): void;
   decreseDifficulty(): void;
@@ -45,7 +46,7 @@ const ConfigProvider: React.FC = ({ children }) => {
     return response ? JSON.parse(response) : false;
   });
 
-  const [musicConfig, setMusicConfig] = useState<MusicConfig>(() => {
+  const [soundsConfig, setSoundsConfig] = useState<SoundsConfig>(() => {
     const response = localStorage.getItem('@tetris333:config:music');
 
     return response
@@ -67,10 +68,18 @@ const ConfigProvider: React.FC = ({ children }) => {
   function toggleGrid(): void {
     setGridEnabled(!gridEnabled);
   }
-  function toggleMusicOn(): void {
-    setMusicConfig(({ on, volume }) => ({
+
+  function toggleSoundsOn(): void {
+    setSoundsConfig(({ on, volume }) => ({
       on: !on,
       volume,
+    }));
+  }
+
+  function setSoundsVolume(volume: number): void {
+    setSoundsConfig(({ on }) => ({
+      on,
+      volume: volume / 100,
     }));
   }
 
@@ -101,7 +110,7 @@ const ConfigProvider: React.FC = ({ children }) => {
 
     localStorage.setItem(
       '@tetris333:config:music',
-      JSON.stringify(musicConfig),
+      JSON.stringify(soundsConfig),
     );
   }
 
@@ -113,11 +122,12 @@ const ConfigProvider: React.FC = ({ children }) => {
           formattedDifficulty,
           gridEnabled,
           phantomPieceEnabled,
-          music: musicConfig,
+          sounds: soundsConfig,
         },
         toggleGrid,
-        toggleMusicOn,
+        toggleSoundsOn,
         togglePhantomPiece,
+        setSoundsVolume,
         increseDifficulty,
         decreseDifficulty,
         saveConfig,
