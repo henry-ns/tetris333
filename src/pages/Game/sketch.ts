@@ -11,8 +11,7 @@ import Board from './entities/Board';
 import theme from '../../styles/themes';
 
 export interface GameSketch extends P5 {
-  restart: () => void;
-  pause: () => void;
+  destroy: () => void;
 }
 
 export type Sketch = (p: GameSketch) => void;
@@ -113,8 +112,12 @@ function createSketch(config: ConfigData): Sketch {
       }
     };
 
-    p.restart = restart;
-    p.pause = pause;
+    p.destroy = () => {
+      pause();
+
+      p.clear();
+      p.remove();
+    };
   }
 
   return sketch;
