@@ -27,13 +27,13 @@ class Board {
 
   private phantomPiece: Piece;
 
-  private isEndGame: boolean;
-
   private sounds: Sounds;
 
   currentPiece: Piece;
 
   nextPiece?: Piece;
+
+  isEndGame: boolean;
 
   level: number;
 
@@ -153,7 +153,7 @@ class Board {
   }
 
   private hardDrop(): void {
-    if (!this.checkEndGame()) {
+    if (!this.isEndGame) {
       const { x, y } = this.phantomPiece.pos;
       this.currentPiece.pos.set(x, y);
 
@@ -325,7 +325,7 @@ class Board {
       this.currentPiece.gravity();
     }
 
-    if (this.isPieceCollided(pieceCopy) || this.checkEndGame()) {
+    if (this.isPieceCollided(pieceCopy) || this.isEndGame) {
       this.addCurrentPiece();
       this.getNextPiece();
     }
@@ -345,10 +345,6 @@ class Board {
     }
 
     return !!moviment;
-  }
-
-  checkEndGame(): boolean {
-    return this.isEndGame;
   }
 }
 

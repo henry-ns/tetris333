@@ -32,7 +32,7 @@ function createSketch(config: ConfigData): Sketch {
     }
 
     function play(): void {
-      if (!board.checkEndGame()) {
+      if (!board.isEndGame) {
         interval = setInterval(() => {
           board.update();
         }, TIME_INTERVAL / (config.difficulty + 1) ** 2);
@@ -78,7 +78,7 @@ function createSketch(config: ConfigData): Sketch {
     p.draw = () => {
       board.show();
 
-      if (board.checkEndGame()) {
+      if (board.isEndGame) {
         const gameOverElement = document.getElementById('game-over');
         gameOverElement?.classList.add('display');
 
