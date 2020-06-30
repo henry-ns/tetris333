@@ -11,10 +11,14 @@ import Board from './entities/Board';
 
 import theme from '../../styles/themes';
 
-export type Sketch = (p: P5) => void;
+export interface GameSketch extends P5 {
+  destroy: () => void;
+}
+
+export type Sketch = (p: GameSketch) => void;
 
 function createSketch(config: ConfigData): Sketch {
-  function sketch(p: P5): void {
+  function sketch(p: GameSketch): void {
     let board: Board;
 
     // let lastKeyPressed: number;
@@ -109,6 +113,13 @@ function createSketch(config: ConfigData): Sketch {
         //   lastKeyPressed = p.keyCode;
         // }
       }
+    };
+
+    p.destroy = () => {
+      pause();
+
+      p.clear();
+      p.remove();
     };
   }
 

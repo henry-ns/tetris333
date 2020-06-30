@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import P5 from 'p5';
 
@@ -6,23 +6,22 @@ import Layout from '../../components/Layout';
 
 import { useConfig } from '../../hooks/config';
 
-import { createSketch } from './sketch';
+import { createSketch, GameSketch } from './sketch';
 
 import SubTitle from '../../styles/SubTitle';
 import { Container, NextPiece, GameOver } from './styles';
 
 const Game: React.FC = () => {
   const { config } = useConfig();
-
-  const [, setGame] = useState<P5>();
   const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (boardRef.current) {
-      const sketch = createSketch(config);
+    const sketch = createSketch(config);
+    const newGame = boardRef.current
+      ? (new P5(sketch, boardRef.current) as GameSketch)
+      : null;
 
-      setGame(new P5(sketch, boardRef.current));
-    }
+    return () => newGame?.destroy();
   }, [config]);
 
   return (
