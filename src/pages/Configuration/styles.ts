@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { rem, opacify } from 'polished';
+import { rem, opacify, lighten } from 'polished';
 
 import MainContainer from '../../styles/Container';
 
@@ -92,6 +92,34 @@ export const Container = styled(MainContainer)`
       &:checked ~ span::before {
         transform: rotate(45deg);
         opacity: 1;
+      }
+    }
+
+    input[type='range'] {
+      -webkit-appearance: none;
+      background: ${({ theme }) => theme.colors.secondaryText};
+
+      height: 24px;
+      width: 40%;
+      max-width: 220px;
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        cursor: pointer;
+
+        height: 32px;
+        width: 32px;
+        background: ${({ theme }) => lighten(0.05, theme.colors.active)};
+        transition: background 0.3s, transform 0.1s;
+
+        &:hover {
+          background: ${({ theme }) => theme.colors.active};
+          transform: scale(1.05) translateZ(0);
+        }
+
+        &:active {
+          transform: scale(1) translateZ(0);
+        }
       }
     }
   }
