@@ -39,8 +39,6 @@ class Board {
 
   points: number;
 
-  countPlays: number;
-
   constructor(
     private canvas: P5,
     private config: Omit<Omit<ConfigData, 'difficulty'>, 'formattedDifficulty'>,
@@ -60,7 +58,6 @@ class Board {
 
     this.level = 1;
     this.points = 0;
-    this.countPlays = 0;
 
     this.displayPoints();
 
