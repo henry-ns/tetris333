@@ -3,7 +3,7 @@ import P5 from 'p5';
 import { ConfigData } from '../../../hooks/config';
 
 import { KEYS, MODELS, BLOCK_SIZE, POINTS } from '../../../utils/constants';
-import sounds from '../../../utils/sounds';
+import createSounds, { Sounds } from '../../../utils/sounds';
 
 import Piece, { Block, Moviments } from './Piece';
 
@@ -27,11 +27,13 @@ class Board {
 
   private phantomPiece: Piece;
 
-  private isEndGame: boolean;
+  private sounds: Sounds;
 
   currentPiece: Piece;
 
   nextPiece?: Piece;
+
+  isEndGame: boolean;
 
   level: number;
 
@@ -39,9 +41,10 @@ class Board {
 
   constructor(
     private canvas: P5,
-    private config: Omit<ConfigData, 'difficulty'>,
+    private config: Omit<Omit<ConfigData, 'difficulty'>, 'formattedDifficulty'>,
     private sizes: Sizes,
   ) {
+    this.sounds = createSounds(config.sounds);
     this.isEndGame = false;
 
     this.pieceStack = [];
@@ -106,10 +109,6 @@ class Board {
   }
 
   private addCurrentPiece(): void {
-    if (this.currentPiece.pos.y < 0) {
-      this.isEndGame = true;
-    }
-
     this.currentPiece.blocks.forEach((block) => {
       const pos = P5.Vector.mult(block.pos, BLOCK_SIZE);
       pos.add(this.currentPiece.pos);
@@ -124,9 +123,19 @@ class Board {
       }
     });
 
-    sounds.pieceColision.play();
+    if (this.config.sounds.on) {
+      this.sounds.pieceColision.play();
+    }
 
     this.checkCompleteLines();
+
+    if (this.currentPiece.pos.y < 0) {
+      this.isEndGame = true;
+
+      if (this.config.sounds.on) {
+        this.sounds.endGame.play();
+      }
+    }
   }
 
   private addPoints(multiplier: number): void {
@@ -144,7 +153,7 @@ class Board {
   }
 
   private hardDrop(): void {
-    if (!this.checkEndGame()) {
+    if (!this.isEndGame) {
       const { x, y } = this.phantomPiece.pos;
       this.currentPiece.pos.set(x, y);
 
@@ -174,7 +183,9 @@ class Board {
     this.addPoints(length - 1);
 
     if (length) {
-      sounds.lineComplete.play();
+      if (this.config.sounds.on) {
+        this.sounds.lineComplete.play();
+      }
 
       this.matrix.splice(fullLineIndexes[0], length);
       fullLineIndexes.forEach(() => this.matrix.unshift(this.initLine()));
@@ -314,7 +325,7 @@ class Board {
       this.currentPiece.gravity();
     }
 
-    if (this.isPieceCollided(pieceCopy) || this.checkEndGame()) {
+    if (this.isPieceCollided(pieceCopy) || this.isEndGame) {
       this.addCurrentPiece();
       this.getNextPiece();
     }
@@ -334,10 +345,6 @@ class Board {
     }
 
     return !!moviment;
-  }
-
-  checkEndGame(): boolean {
-    return this.isEndGame;
   }
 }
 

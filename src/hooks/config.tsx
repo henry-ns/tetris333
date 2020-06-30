@@ -1,14 +1,22 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
 
+interface SoundsConfig {
+  volume: number;
+  on: boolean;
+}
+
 export interface ConfigData {
   difficulty: number;
   formattedDifficulty: string;
   gridEnabled: boolean;
   phantomPieceEnabled: boolean;
+  sounds: SoundsConfig;
 }
 
 interface Config {
   config: ConfigData;
+  setSoundsVolume(volume: number): void;
+  toggleSoundsOn(): void;
   togglePhantomPiece(): void;
   toggleGrid(): void;
   increseDifficulty(): void;
@@ -21,19 +29,32 @@ const DIFFICULTY = ['Facíl', 'Médio', 'Díficil'];
 const ConfigContext = createContext<Config>({} as Config);
 
 const ConfigProvider: React.FC = ({ children }) => {
-  const [difficulty, setDifficulty] = useState(() => {
+  const [difficulty, setDifficulty] = useState<number>(() => {
     const response = localStorage.getItem('@tetris333:config:difficulty');
     return response ? JSON.parse(response) : 1;
   });
 
-  const [phantomPieceEnabled, setPhantomPieceEnabled] = useState(() => {
-    const response = localStorage.getItem('@tetris333:config:phantomPiece');
-    return response ? JSON.parse(response) : true;
-  });
+  const [phantomPieceEnabled, setPhantomPieceEnabled] = useState<boolean>(
+    () => {
+      const response = localStorage.getItem('@tetris333:config:phantomPiece');
+      return response ? JSON.parse(response) : true;
+    },
+  );
 
-  const [gridEnabled, setGridEnabled] = useState(() => {
+  const [gridEnabled, setGridEnabled] = useState<boolean>(() => {
     const response = localStorage.getItem('@tetris333:config:grid');
     return response ? JSON.parse(response) : false;
+  });
+
+  const [soundsConfig, setSoundsConfig] = useState<SoundsConfig>(() => {
+    const response = localStorage.getItem('@tetris333:config:music');
+
+    return response
+      ? JSON.parse(response)
+      : {
+          volume: 0.4,
+          on: true,
+        };
   });
 
   const formattedDifficulty = useMemo(() => DIFFICULTY[difficulty], [
@@ -46,6 +67,20 @@ const ConfigProvider: React.FC = ({ children }) => {
 
   function toggleGrid(): void {
     setGridEnabled(!gridEnabled);
+  }
+
+  function toggleSoundsOn(): void {
+    setSoundsConfig(({ on, volume }) => ({
+      on: !on,
+      volume,
+    }));
+  }
+
+  function setSoundsVolume(volume: number): void {
+    setSoundsConfig(({ on }) => ({
+      on,
+      volume: volume / 100,
+    }));
   }
 
   function increseDifficulty(): void {
@@ -72,6 +107,11 @@ const ConfigProvider: React.FC = ({ children }) => {
       '@tetris333:config:phantomPiece',
       JSON.stringify(phantomPieceEnabled),
     );
+
+    localStorage.setItem(
+      '@tetris333:config:music',
+      JSON.stringify(soundsConfig),
+    );
   }
 
   return (
@@ -82,9 +122,12 @@ const ConfigProvider: React.FC = ({ children }) => {
           formattedDifficulty,
           gridEnabled,
           phantomPieceEnabled,
+          sounds: soundsConfig,
         },
         toggleGrid,
+        toggleSoundsOn,
         togglePhantomPiece,
+        setSoundsVolume,
         increseDifficulty,
         decreseDifficulty,
         saveConfig,

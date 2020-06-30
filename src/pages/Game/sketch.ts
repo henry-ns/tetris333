@@ -5,7 +5,6 @@ import { opacify } from 'polished';
 import { ConfigData } from '../../hooks/config';
 
 import { BOARD, BLOCK_SIZE, KEYS, TIME_INTERVAL } from '../../utils/constants';
-import sounds from '../../utils/sounds';
 
 import Board from './entities/Board';
 
@@ -33,7 +32,7 @@ function createSketch(config: ConfigData): Sketch {
     }
 
     function play(): void {
-      if (!board.checkEndGame()) {
+      if (!board.isEndGame) {
         interval = setInterval(() => {
           board.update();
         }, TIME_INTERVAL / (config.difficulty + 1) ** 2);
@@ -79,7 +78,7 @@ function createSketch(config: ConfigData): Sketch {
     p.draw = () => {
       board.show();
 
-      if (board.checkEndGame()) {
+      if (board.isEndGame) {
         const gameOverElement = document.getElementById('game-over');
         gameOverElement?.classList.add('display');
 
@@ -87,8 +86,6 @@ function createSketch(config: ConfigData): Sketch {
         p.rect(0, 0, p.width, p.height);
 
         pause();
-
-        sounds.endGame.play();
       }
     };
 
